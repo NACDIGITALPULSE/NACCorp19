@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowDown, Check } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -34,19 +35,23 @@ const Hero = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <Button 
-                size="lg" 
-                className="bg-niger-orange hover:bg-niger-orange-dark text-white px-8 py-4 text-lg font-medium"
-              >
-                Créer mon NIF & RCCM
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-niger-green text-niger-green hover:bg-niger-green hover:text-white px-8 py-4 text-lg font-medium"
-              >
-                Découvrir nos services design
-              </Button>
+              <Link to="/inscription">
+                <Button 
+                  size="lg" 
+                  className="bg-niger-orange hover:bg-niger-orange-dark text-white px-8 py-4 text-lg font-medium w-full sm:w-auto"
+                >
+                  Créer mon NIF & RCCM
+                </Button>
+              </Link>
+              <Link to="/inscription">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-niger-green text-niger-green hover:bg-niger-green hover:text-white px-8 py-4 text-lg font-medium w-full sm:w-auto"
+                >
+                  Découvrir nos services design
+                </Button>
+              </Link>
             </div>
 
             <div className="flex items-center space-x-8 text-sm text-gray-500">

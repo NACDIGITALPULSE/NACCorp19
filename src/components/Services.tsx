@@ -1,7 +1,7 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Image, Check, ArrowUp } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Services = () => {
   return (
@@ -74,10 +74,12 @@ const Services = () => {
                 <p className="text-2xl font-bold text-gray-900">3-5 jours ouvrés</p>
               </div>
 
-              <Button className="w-full bg-niger-orange hover:bg-niger-orange-dark text-white">
-                Commencer mes démarches
-                <ArrowUp className="w-4 h-4 ml-2 rotate-45" />
-              </Button>
+              <Link to="/inscription">
+                <Button className="w-full bg-niger-orange hover:bg-niger-orange-dark text-white">
+                  Commencer mes démarches
+                  <ArrowUp className="w-4 h-4 ml-2 rotate-45" />
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
@@ -134,10 +136,12 @@ const Services = () => {
                 <p className="text-2xl font-bold text-gray-900">5-7 jours ouvrés</p>
               </div>
 
-              <Button className="w-full bg-niger-green hover:bg-niger-green-dark text-white">
-                Créer mon identité visuelle
-                <ArrowUp className="w-4 h-4 ml-2 rotate-45" />
-              </Button>
+              <Link to="/inscription">
+                <Button className="w-full bg-niger-green hover:bg-niger-green-dark text-white">
+                  Créer mon identité visuelle
+                  <ArrowUp className="w-4 h-4 ml-2 rotate-45" />
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </div>
@@ -153,9 +157,11 @@ const Services = () => {
               <span className="text-3xl font-bold">-25%</span>
               <span className="text-lg opacity-75">sur le pack combiné</span>
             </div>
-            <Button size="lg" className="bg-white text-niger-orange hover:bg-gray-100 font-bold px-8">
-              Découvrir le pack complet
-            </Button>
+            <Link to="/inscription">
+              <Button size="lg" className="bg-white text-niger-orange hover:bg-gray-100 font-bold px-8">
+                Découvrir le pack complet
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>

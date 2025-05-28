@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,14 +13,14 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-niger-orange to-niger-green rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">NE</span>
               </div>
               <span className="font-playfair font-bold text-xl text-gray-900">
                 Niger EntreprenderHub
               </span>
-            </div>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
@@ -36,12 +37,16 @@ const Header = () => {
             <a href="#contact" className="text-gray-600 hover:text-niger-orange transition-colors">
               Contact
             </a>
-            <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white">
-              Se connecter
-            </Button>
-            <Button className="bg-niger-orange hover:bg-niger-orange-dark text-white">
-              Commencer maintenant
-            </Button>
+            <Link to="/inscription">
+              <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white">
+                Se connecter
+              </Button>
+            </Link>
+            <Link to="/inscription">
+              <Button className="bg-niger-orange hover:bg-niger-orange-dark text-white">
+                Commencer maintenant
+              </Button>
+            </Link>
           </nav>
 
           {/* Mobile menu button */}
@@ -72,12 +77,16 @@ const Header = () => {
                 Contact
               </a>
               <div className="flex flex-col space-y-2 pt-4">
-                <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white">
-                  Se connecter
-                </Button>
-                <Button className="bg-niger-orange hover:bg-niger-orange-dark text-white">
-                  Commencer maintenant
-                </Button>
+                <Link to="/inscription">
+                  <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white w-full">
+                    Se connecter
+                  </Button>
+                </Link>
+                <Link to="/inscription">
+                  <Button className="bg-niger-orange hover:bg-niger-orange-dark text-white w-full">
+                    Commencer maintenant
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

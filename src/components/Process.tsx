@@ -1,6 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Check, FileText, Image, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Process = () => {
   const steps = [
@@ -90,12 +91,16 @@ const Process = () => {
               Rejoignez les centaines d'entrepreneurs qui nous font confiance pour leurs démarches.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-niger-orange hover:bg-niger-orange-dark text-white px-8 py-3 rounded-lg font-medium transition-colors">
-                Commencer maintenant
-              </button>
-              <button className="border-2 border-niger-green text-niger-green hover:bg-niger-green hover:text-white px-8 py-3 rounded-lg font-medium transition-colors">
-                Planifier un appel
-              </button>
+              <Link to="/inscription">
+                <button className="bg-niger-orange hover:bg-niger-orange-dark text-white px-8 py-3 rounded-lg font-medium transition-colors">
+                  Commencer maintenant
+                </button>
+              </Link>
+              <Link to="/inscription">
+                <button className="border-2 border-niger-green text-niger-green hover:bg-niger-green hover:text-white px-8 py-3 rounded-lg font-medium transition-colors">
+                  Planifier un appel
+                </button>
+              </Link>
             </div>
           </div>
         </div>
