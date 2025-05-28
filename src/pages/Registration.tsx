@@ -1,16 +1,16 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useRegistrationWorkflow } from '@/hooks/useRegistrationWorkflow';
-import { ArrowLeft, ArrowRight, Check, User, Building, FileText } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, User, Building, FileText, Upload, UserPlus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
+import { FileUpload } from '@/components/FileUpload';
 
 const Registration = () => {
-  const { currentStep, registrationData, updateData, nextStep, prevStep, submitRegistration, totalSteps } = useRegistrationWorkflow();
+  const { currentStep, registrationData, updateData, updateDocuments, nextStep, prevStep, submitRegistration, totalSteps } = useRegistrationWorkflow();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -19,12 +19,20 @@ const Registration = () => {
   };
 
   const handleNext = () => {
-    // Validation basique avant de passer à l'étape suivante
+    // Validation selon l'étape
     if (currentStep === 1) {
-      if (!registrationData.firstName || !registrationData.lastName || !registrationData.email) {
+      if (!registrationData.firstName || !registrationData.lastName || !registrationData.email || !registrationData.password) {
         toast({
           title: "Erreur",
           description: "Veuillez remplir tous les champs obligatoires",
+          variant: "destructive"
+        });
+        return;
+      }
+      if (registrationData.password !== registrationData.confirmPassword) {
+        toast({
+          title: "Erreur",
+          description: "Les mots de passe ne correspondent pas",
           variant: "destructive"
         });
         return;
@@ -40,9 +48,9 @@ const Registration = () => {
       if (result.success) {
         toast({
           title: "Inscription réussie!",
-          description: "Votre demande a été soumise avec succès. Nous vous contacterons bientôt.",
+          description: "Votre compte a été créé et votre demande soumise. Nous vous contacterons bientôt.",
         });
-        nextStep(); // Aller à l'étape de confirmation
+        nextStep();
       }
     } catch (error) {
       toast({
@@ -56,10 +64,11 @@ const Registration = () => {
   };
 
   const steps = [
-    { number: 1, title: "Informations personnelles", icon: User },
+    { number: 1, title: "Création de compte", icon: UserPlus },
     { number: 2, title: "Informations entreprise", icon: Building },
-    { number: 3, title: "Services demandés", icon: FileText },
-    { number: 4, title: "Confirmation", icon: Check }
+    { number: 3, title: "Documents requis", icon: Upload },
+    { number: 4, title: "Services demandés", icon: FileText },
+    { number: 5, title: "Confirmation", icon: Check }
   ];
 
   const StepIcon = steps[currentStep - 1]?.icon;
@@ -77,13 +86,13 @@ const Registration = () => {
             Inscription NIF & RCCM
           </h1>
           <p className="text-gray-600">
-            Créez votre entreprise en quelques étapes simples
+            Créez votre compte et votre entreprise en quelques étapes simples
           </p>
         </div>
 
         {/* Progress Steps */}
-        <div className="flex justify-center mb-8">
-          <div className="flex items-center space-x-4">
+        <div className="flex justify-center mb-8 overflow-x-auto">
+          <div className="flex items-center space-x-2 md:space-x-4 min-w-max px-4">
             {steps.map((step, index) => {
               const IconComponent = step.icon;
               return (
@@ -96,7 +105,7 @@ const Registration = () => {
                     <IconComponent className="w-5 h-5" />
                   </div>
                   {index < steps.length - 1 && (
-                    <div className={`w-16 h-1 mx-2 ${
+                    <div className={`w-8 md:w-16 h-1 mx-1 md:mx-2 ${
                       currentStep > step.number ? 'bg-niger-orange' : 'bg-gray-200'
                     }`} />
                   )}
@@ -118,7 +127,7 @@ const Registration = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Étape 1: Informations personnelles */}
+            {/* Étape 1: Création de compte */}
             {currentStep === 1 && (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -158,6 +167,26 @@ const Registration = () => {
                     value={registrationData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                     placeholder="+227 XX XX XX XX"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="password">Mot de passe *</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={registrationData.password}
+                    onChange={(e) => handleInputChange('password', e.target.value)}
+                    placeholder="Mot de passe sécurisé"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="confirmPassword">Confirmer le mot de passe *</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    value={registrationData.confirmPassword}
+                    onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                    placeholder="Confirmer votre mot de passe"
                   />
                 </div>
               </div>
@@ -222,8 +251,49 @@ const Registration = () => {
               </div>
             )}
 
-            {/* Étape 3: Services demandés */}
+            {/* Étape 3: Documents requis */}
             {currentStep === 3 && (
+              <div className="space-y-6">
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h3 className="text-lg font-semibold text-blue-900 mb-2">Documents requis</h3>
+                  <p className="text-blue-700 text-sm">
+                    Veuillez télécharger les documents suivants pour finaliser votre demande.
+                  </p>
+                </div>
+                
+                <div className="space-y-4">
+                  <div>
+                    <Label>Pièce d'identité (obligatoire)</Label>
+                    <FileUpload
+                      onFileSelect={(file) => updateDocuments('identityCard', file)}
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      currentFile={registrationData.documents.identityCard}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Justificatif de domicile (obligatoire)</Label>
+                    <FileUpload
+                      onFileSelect={(file) => updateDocuments('proofOfAddress', file)}
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      currentFile={registrationData.documents.proofOfAddress}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Statuts de l'entreprise (si applicable)</Label>
+                    <FileUpload
+                      onFileSelect={(file) => updateDocuments('companyStatutes', file)}
+                      accept=".pdf,.doc,.docx"
+                      currentFile={registrationData.documents.companyStatutes}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Étape 4: Services demandés */}
+            {currentStep === 4 && (
               <div className="space-y-6">
                 <div>
                   <h3 className="text-lg font-semibold mb-4">Services administratifs</h3>
@@ -275,8 +345,8 @@ const Registration = () => {
               </div>
             )}
 
-            {/* Étape 4: Confirmation */}
-            {currentStep === 4 && (
+            {/* Étape 5: Confirmation */}
+            {currentStep === 5 && (
               <div className="text-center space-y-6">
                 <div className="w-16 h-16 bg-niger-green/10 rounded-full flex items-center justify-center mx-auto">
                   <Check className="w-8 h-8 text-niger-green" />
@@ -286,7 +356,7 @@ const Registration = () => {
                     Inscription terminée !
                   </h3>
                   <p className="text-gray-600">
-                    Votre demande a été soumise avec succès. Notre équipe va traiter votre dossier 
+                    Votre compte a été créé et votre demande soumise avec succès. Notre équipe va traiter votre dossier 
                     et vous contacter dans les 24 heures pour confirmer les détails.
                   </p>
                 </div>
@@ -295,6 +365,7 @@ const Registration = () => {
                   <ul className="text-sm text-gray-600 space-y-1">
                     <li>• Entreprise : {registrationData.companyName}</li>
                     <li>• Contact : {registrationData.firstName} {registrationData.lastName}</li>
+                    <li>• Email : {registrationData.email}</li>
                     {registrationData.needsNIF && <li>• ✓ Création NIF</li>}
                     {registrationData.needsRCCM && <li>• ✓ Enregistrement RCCM</li>}
                     {registrationData.needsLogo && <li>• ✓ Création de logo</li>}
@@ -310,7 +381,7 @@ const Registration = () => {
             )}
 
             {/* Navigation Buttons */}
-            {currentStep < 4 && (
+            {currentStep < 5 && (
               <div className="flex justify-between pt-6">
                 <Button
                   variant="outline"
@@ -322,7 +393,7 @@ const Registration = () => {
                   <span>Précédent</span>
                 </Button>
 
-                {currentStep < 3 ? (
+                {currentStep < 4 ? (
                   <Button
                     onClick={handleNext}
                     className="bg-niger-orange hover:bg-niger-orange-dark text-white flex items-center space-x-2"
@@ -336,7 +407,7 @@ const Registration = () => {
                     disabled={isSubmitting}
                     className="bg-niger-green hover:bg-niger-green-dark text-white flex items-center space-x-2"
                   >
-                    <span>{isSubmitting ? 'Soumission...' : 'Soumettre'}</span>
+                    <span>{isSubmitting ? 'Soumission...' : 'Créer mon compte'}</span>
                     <Check className="w-4 h-4" />
                   </Button>
                 )}
