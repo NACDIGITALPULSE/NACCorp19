@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useRegistrationWorkflow } from '@/hooks/useRegistrationWorkflow';
-import { ArrowLeft, ArrowRight, Check, User, Building, FileText, Palette } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, User, Building, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
 
@@ -62,6 +62,8 @@ const Registration = () => {
     { number: 4, title: "Confirmation", icon: Check }
   ];
 
+  const StepIcon = steps[currentStep - 1]?.icon;
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
@@ -82,22 +84,25 @@ const Registration = () => {
         {/* Progress Steps */}
         <div className="flex justify-center mb-8">
           <div className="flex items-center space-x-4">
-            {steps.map((step, index) => (
-              <div key={step.number} className="flex items-center">
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
-                  currentStep >= step.number 
-                    ? 'bg-niger-orange text-white' 
-                    : 'bg-gray-200 text-gray-500'
-                }`}>
-                  <step.icon className="w-5 h-5" />
+            {steps.map((step, index) => {
+              const IconComponent = step.icon;
+              return (
+                <div key={step.number} className="flex items-center">
+                  <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
+                    currentStep >= step.number 
+                      ? 'bg-niger-orange text-white' 
+                      : 'bg-gray-200 text-gray-500'
+                  }`}>
+                    <IconComponent className="w-5 h-5" />
+                  </div>
+                  {index < steps.length - 1 && (
+                    <div className={`w-16 h-1 mx-2 ${
+                      currentStep > step.number ? 'bg-niger-orange' : 'bg-gray-200'
+                    }`} />
+                  )}
                 </div>
-                {index < steps.length - 1 && (
-                  <div className={`w-16 h-1 mx-2 ${
-                    currentStep > step.number ? 'bg-niger-orange' : 'bg-gray-200'
-                  }`} />
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -105,7 +110,7 @@ const Registration = () => {
         <Card className="max-w-2xl mx-auto">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
-              <steps[currentStep - 1]?.icon className="w-5 h-5" />
+              {StepIcon && <StepIcon className="w-5 h-5" />}
               <span>{steps[currentStep - 1]?.title}</span>
             </CardTitle>
             <CardDescription>
