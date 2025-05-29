@@ -37,14 +37,14 @@ const Header = () => {
             <a href="#contact" className="text-gray-600 hover:text-niger-orange transition-colors">
               Contact
             </a>
-            <Link to="/inscription">
+            <Link to="/creer-compte">
               <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white">
-                Se connecter
+                Créer un compte
               </Button>
             </Link>
-            <Link to="/inscription">
+            <Link to="/inscription-nif-rccm">
               <Button className="bg-niger-orange hover:bg-niger-orange-dark text-white">
-                Commencer maintenant
+                NIF & RCCM
               </Button>
             </Link>
           </nav>
@@ -77,14 +77,19 @@ const Header = () => {
                 Contact
               </a>
               <div className="flex flex-col space-y-2 pt-4">
-                <Link to="/inscription">
+                <Link to="/creer-compte">
                   <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white w-full">
-                    Se connecter
+                    Créer un compte
                   </Button>
                 </Link>
-                <Link to="/inscription">
+                <Link to="/inscription-nif-rccm">
                   <Button className="bg-niger-orange hover:bg-niger-orange-dark text-white w-full">
-                    Commencer maintenant
+                    NIF & RCCM
+                  </Button>
+                </Link>
+                <Link to="/visibilite-en-ligne">
+                  <Button className="bg-niger-green hover:bg-niger-green-dark text-white w-full">
+                    Visibilité en ligne
                   </Button>
                 </Link>
               </div>

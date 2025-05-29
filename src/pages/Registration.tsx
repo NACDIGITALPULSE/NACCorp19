@@ -86,7 +86,7 @@ const Registration = () => {
             Inscription NIF & RCCM
           </h1>
           <p className="text-gray-600">
-            Créez votre compte et votre entreprise en quelques étapes simples
+            Obtenez votre NIF et RCCM en quelques étapes simples
           </p>
         </div>
 
@@ -123,7 +123,7 @@ const Registration = () => {
               <span>{steps[currentStep - 1]?.title}</span>
             </CardTitle>
             <CardDescription>
-              Étape {currentStep} sur {totalSteps}
+              Étape {currentStep} sur {totalSteps} - Spécialisé NIF & RCCM
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -407,7 +407,7 @@ const Registration = () => {
                     disabled={isSubmitting}
                     className="bg-niger-green hover:bg-niger-green-dark text-white flex items-center space-x-2"
                   >
-                    <span>{isSubmitting ? 'Soumission...' : 'Créer mon compte'}</span>
+                    <span>{isSubmitting ? 'Soumission...' : 'Créer mon NIF & RCCM'}</span>
                     <Check className="w-4 h-4" />
                   </Button>
                 )}
