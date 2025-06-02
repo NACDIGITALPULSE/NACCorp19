@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Registration from "./pages/Registration";
 import CreateAccount from "./pages/CreateAccount";
+import Login from "./pages/Login";
 import OnlineVisibility from "./pages/OnlineVisibility";
 import WebsiteService from "./pages/WebsiteService";
 import LogoService from "./pages/LogoService";
@@ -25,6 +26,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/creer-compte" element={<CreateAccount />} />
+          <Route path="/connexion" element={<Login />} />
           <Route path="/inscription-nif-rccm" element={<Registration />} />
           <Route path="/visibilite-en-ligne" element={<OnlineVisibility />} />
           <Route path="/website-service" element={<WebsiteService />} />

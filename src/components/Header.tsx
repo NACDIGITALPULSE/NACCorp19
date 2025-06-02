@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogIn } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -36,6 +36,12 @@ const Header = () => {
             </Link>
             <Link to="/contact" className="text-gray-600 hover:text-niger-orange transition-colors">
               Contact
+            </Link>
+            <Link to="/connexion">
+              <Button variant="ghost" className="text-gray-600 hover:text-niger-orange">
+                <LogIn className="w-4 h-4 mr-2" />
+                Se connecter
+              </Button>
             </Link>
             <Link to="/creer-compte">
               <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white">
@@ -77,6 +83,12 @@ const Header = () => {
                 Contact
               </Link>
               <div className="flex flex-col space-y-2 pt-4">
+                <Link to="/connexion">
+                  <Button variant="ghost" className="text-gray-600 hover:text-niger-orange w-full justify-start">
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Se connecter
+                  </Button>
+                </Link>
                 <Link to="/creer-compte">
                   <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white w-full">
                     Créer un compte

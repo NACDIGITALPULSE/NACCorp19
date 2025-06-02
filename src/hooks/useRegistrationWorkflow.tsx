@@ -1,5 +1,5 @@
-
 import { useState } from 'react';
+import { sendConfirmationEmail } from '@/services/emailService';
 
 export interface RegistrationData {
   // Étape 1: Informations personnelles & Compte
@@ -84,8 +84,36 @@ export const useRegistrationWorkflow = () => {
 
   const submitRegistration = async () => {
     console.log('Soumission de l\'inscription:', registrationData);
-    // Ici on intégrerait l'API pour soumettre les données et créer le compte
-    return { success: true, message: 'Inscription réussie!' };
+    
+    try {
+      // Envoi de l'email de confirmation
+      const emailSent = await sendConfirmationEmail({
+        to: registrationData.email,
+        firstName: registrationData.firstName,
+        lastName: registrationData.lastName,
+        type: 'nif-rccm',
+        data: {
+          nifType: registrationData.nifType,
+          companyName: registrationData.companyName,
+          services: {
+            needsNIF: registrationData.needsNIF,
+            needsRCCM: registrationData.needsRCCM,
+            needsLogo: registrationData.needsLogo,
+            needsGraphicDesign: registrationData.needsGraphicDesign
+          }
+        }
+      });
+      
+      return { 
+        success: true, 
+        message: emailSent 
+          ? 'Inscription réussie! Un email de confirmation a été envoyé.' 
+          : 'Inscription réussie! Nous vous contacterons bientôt.'
+      };
+    } catch (error) {
+      console.error('Erreur lors de la soumission:', error);
+      return { success: false, message: 'Erreur lors de l\'inscription' };
+    }
   };
 
   const getNifTypeDescription = (type: string) => {
