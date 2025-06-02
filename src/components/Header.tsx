@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Menu, X, LogIn } from "lucide-react";
 import { useState } from "react";
@@ -36,6 +35,9 @@ const Header = () => {
             </Link>
             <Link to="/contact" className="text-gray-600 hover:text-niger-orange transition-colors">
               Contact
+            </Link>
+            <Link to="/tableau-de-bord" className="text-gray-600 hover:text-niger-orange transition-colors">
+              Mon tableau de bord
             </Link>
             <Link to="/connexion">
               <Button variant="ghost" className="text-gray-600 hover:text-niger-orange">
@@ -81,6 +83,9 @@ const Header = () => {
               </Link>
               <Link to="/contact" className="text-gray-600 hover:text-niger-orange transition-colors">
                 Contact
+              </Link>
+              <Link to="/tableau-de-bord" className="text-gray-600 hover:text-niger-orange transition-colors">
+                Mon tableau de bord
               </Link>
               <div className="flex flex-col space-y-2 pt-4">
                 <Link to="/connexion">

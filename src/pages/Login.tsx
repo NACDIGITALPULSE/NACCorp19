@@ -1,35 +1,23 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, LogIn, Eye, EyeOff, Mail } from 'lucide-react';
+import { Mail, Key, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { Link } from 'react-router-dom';
-
-interface LoginData {
-  email: string;
-  password: string;
-}
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [loginData, setLoginData] = useState<LoginData>({
-    email: '',
-    password: '',
-  });
-
-  const handleInputChange = (field: keyof LoginData, value: string) => {
-    setLoginData(prev => ({ ...prev, [field]: value }));
-  };
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!loginData.email || !loginData.password) {
+    if (!email || !password) {
       toast({
         title: "Erreur",
         description: "Veuillez remplir tous les champs",
@@ -38,18 +26,20 @@ const Login = () => {
       return;
     }
 
-    setIsSubmitting(true);
+    setIsLoading(true);
+    
     try {
-      // Simulation de connexion
+      // Simulation de connexion - dans un vrai projet, ceci serait un appel API
       await new Promise(resolve => setTimeout(resolve, 1500));
       
+      // Simulation de succès
       toast({
         title: "Connexion réussie!",
         description: "Vous êtes maintenant connecté à votre compte.",
       });
       
-      // Ici on redirigerait vers le tableau de bord
-      console.log('Utilisateur connecté:', loginData.email);
+      // Redirection vers le tableau de bord
+      navigate('/tableau-de-bord');
     } catch (error) {
       toast({
         title: "Erreur de connexion",
@@ -57,102 +47,68 @@ const Login = () => {
         variant: "destructive"
       });
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-md mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center text-niger-orange hover:text-niger-orange-dark mb-4">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour à l'accueil
-          </Link>
-          <h1 className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-            Se connecter
-          </h1>
-          <p className="text-gray-600">
-            Accédez à votre compte Niger EntreprenderHub
-          </p>
-        </div>
-
-        {/* Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <LogIn className="w-5 h-5" />
-              <span>Connexion</span>
-            </CardTitle>
-            <CardDescription>
-              Entrez vos identifiants pour vous connecter
-            </CardDescription>
+    <div className="min-h-screen bg-gray-50 py-6 flex items-center justify-center">
+      <div className="container max-w-lg">
+        <Link to="/" className="inline-flex items-center text-niger-orange hover:text-niger-orange-dark mb-4">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Retour à l'accueil
+        </Link>
+        <Card className="bg-white shadow-md rounded-lg">
+          <CardHeader className="space-y-1 p-6">
+            <CardTitle className="text-2xl font-semibold text-gray-900">Se connecter</CardTitle>
+            <CardDescription className="text-gray-500">Entrez vos identifiants pour accéder à votre compte</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="email">Email</Label>
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-700">Email</Label>
                 <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <Input
                     id="email"
-                    type="email"
-                    value={loginData.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
                     placeholder="votre@email.com"
-                    required
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pl-12"
                   />
-                  <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 </div>
               </div>
-              
-              <div>
-                <Label htmlFor="password">Mot de passe</Label>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-gray-700">Mot de passe</Label>
                 <div className="relative">
+                  <Key className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <Input
                     id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={loginData.password}
-                    onChange={(e) => handleInputChange('password', e.target.value)}
-                    placeholder="Votre mot de passe"
-                    required
+                    placeholder="Mot de passe"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pl-12"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
                 </div>
               </div>
-
-              <div className="flex items-center justify-between">
-                <label className="flex items-center">
-                  <input type="checkbox" className="w-4 h-4 text-niger-orange mr-2" />
-                  <span className="text-sm text-gray-600">Se souvenir de moi</span>
-                </label>
-                <Link to="/mot-de-passe-oublie" className="text-sm text-niger-orange hover:text-niger-orange-dark">
-                  Mot de passe oublié ?
-                </Link>
-              </div>
-
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-niger-orange hover:bg-niger-orange-dark text-white"
-              >
-                {isSubmitting ? 'Connexion en cours...' : 'Se connecter'}
+              <Button disabled={isLoading} className="w-full bg-niger-orange text-white hover:bg-niger-orange-dark">
+                {isLoading ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Connexion...
+                  </>
+                ) : (
+                  "Se connecter"
+                )}
               </Button>
             </form>
-            
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                Vous n'avez pas de compte ?{' '}
-                <Link to="/creer-compte" className="text-niger-orange hover:text-niger-orange-dark font-medium">
-                  Créer un compte
-                </Link>
-              </p>
+            <div className="mt-4 text-sm text-gray-600">
+              Pas de compte ? <Link to="/creer-compte" className="text-niger-orange hover:underline">Créer un compte</Link>
             </div>
           </CardContent>
         </Card>

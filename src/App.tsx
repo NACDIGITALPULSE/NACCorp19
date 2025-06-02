@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +13,7 @@ import LogoService from "./pages/LogoService";
 import Pricing from "./pages/Pricing";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import Dashboard from "./pages/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +27,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/creer-compte" element={<CreateAccount />} />
           <Route path="/connexion" element={<Login />} />
+          <Route path="/tableau-de-bord" element={<Dashboard />} />
           <Route path="/inscription-nif-rccm" element={<Registration />} />
           <Route path="/visibilite-en-ligne" element={<OnlineVisibility />} />
           <Route path="/website-service" element={<WebsiteService />} />

@@ -58,7 +58,7 @@ const Registration = () => {
       if (result.success) {
         toast({
           title: "Inscription réussie!",
-          description: "Votre compte a été créé et votre demande soumise. Nous vous contacterons bientôt.",
+          description: "Votre compte a été créé et votre demande soumise. Vous pouvez maintenant suivre l'avancement dans votre tableau de bord.",
         });
         nextStep();
       }
@@ -467,11 +467,18 @@ const Registration = () => {
                     {registrationData.needsGraphicDesign && <li>• ✓ Services d'infographie</li>}
                   </ul>
                 </div>
-                <Link to="/">
-                  <Button className="bg-niger-orange hover:bg-niger-orange-dark text-white">
-                    Retour à l'accueil
-                  </Button>
-                </Link>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link to="/tableau-de-bord">
+                    <Button className="bg-niger-green hover:bg-niger-green-dark text-white">
+                      Voir mon tableau de bord
+                    </Button>
+                  </Link>
+                  <Link to="/">
+                    <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white">
+                      Retour à l'accueil
+                    </Button>
+                  </Link>
+                </div>
               </div>
             )}
 
