@@ -17,19 +17,20 @@ export interface RegistrationData {
   address: string;
   city: string;
   
-  // Étape 3: Documents administratifs
+  // Étape 3: Type de NIF et services
+  nifType: 'NIF-P' | 'NIF-R' | 'NIF-S' | '';
+  needsNIF: boolean;
+  needsRCCM: boolean;
+  needsLogo: boolean;
+  needsGraphicDesign: boolean;
+  
+  // Étape 4: Documents administratifs
   documents: {
     identityCard: File | null;
     proofOfAddress: File | null;
     companyStatutes: File | null;
     additionalDocs: File[];
   };
-  
-  // Étape 4: Services demandés
-  needsNIF: boolean;
-  needsRCCM: boolean;
-  needsLogo: boolean;
-  needsGraphicDesign: boolean;
 }
 
 export const useRegistrationWorkflow = () => {
@@ -46,16 +47,17 @@ export const useRegistrationWorkflow = () => {
     sector: '',
     address: '',
     city: '',
+    nifType: '',
+    needsNIF: true,
+    needsRCCM: true,
+    needsLogo: false,
+    needsGraphicDesign: false,
     documents: {
       identityCard: null,
       proofOfAddress: null,
       companyStatutes: null,
       additionalDocs: []
     },
-    needsNIF: true,
-    needsRCCM: true,
-    needsLogo: false,
-    needsGraphicDesign: false,
   });
 
   const updateData = (newData: Partial<RegistrationData>) => {
@@ -73,7 +75,7 @@ export const useRegistrationWorkflow = () => {
   };
 
   const nextStep = () => {
-    setCurrentStep(prev => Math.min(prev + 1, 5));
+    setCurrentStep(prev => Math.min(prev + 1, 6));
   };
 
   const prevStep = () => {
@@ -86,6 +88,19 @@ export const useRegistrationWorkflow = () => {
     return { success: true, message: 'Inscription réussie!' };
   };
 
+  const getNifTypeDescription = (type: string) => {
+    switch (type) {
+      case 'NIF-P':
+        return 'Personnes physiques (entrepreneurs individuels, professionnels libéraux)';
+      case 'NIF-R':
+        return 'Personnes morales (sociétés, associations, coopératives)';
+      case 'NIF-S':
+        return 'Structures spéciales (ONG, organisations internationales)';
+      default:
+        return '';
+    }
+  };
+
   return {
     currentStep,
     registrationData,
@@ -94,6 +109,7 @@ export const useRegistrationWorkflow = () => {
     nextStep,
     prevStep,
     submitRegistration,
-    totalSteps: 5
+    getNifTypeDescription,
+    totalSteps: 6
   };
 };

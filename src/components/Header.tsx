@@ -25,18 +25,18 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#services" className="text-gray-600 hover:text-niger-orange transition-colors">
+            <a href="/#services" className="text-gray-600 hover:text-niger-orange transition-colors">
               Services
             </a>
-            <a href="#processus" className="text-gray-600 hover:text-niger-orange transition-colors">
+            <a href="/#processus" className="text-gray-600 hover:text-niger-orange transition-colors">
               Comment ça marche
             </a>
-            <a href="#tarifs" className="text-gray-600 hover:text-niger-orange transition-colors">
+            <Link to="/tarifs" className="text-gray-600 hover:text-niger-orange transition-colors">
               Tarifs
-            </a>
-            <a href="#contact" className="text-gray-600 hover:text-niger-orange transition-colors">
+            </Link>
+            <Link to="/contact" className="text-gray-600 hover:text-niger-orange transition-colors">
               Contact
-            </a>
+            </Link>
             <Link to="/creer-compte">
               <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white">
                 Créer un compte
@@ -64,18 +64,18 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-100">
             <div className="flex flex-col space-y-4">
-              <a href="#services" className="text-gray-600 hover:text-niger-orange transition-colors">
+              <a href="/#services" className="text-gray-600 hover:text-niger-orange transition-colors">
                 Services
               </a>
-              <a href="#processus" className="text-gray-600 hover:text-niger-orange transition-colors">
+              <a href="/#processus" className="text-gray-600 hover:text-niger-orange transition-colors">
                 Comment ça marche
               </a>
-              <a href="#tarifs" className="text-gray-600 hover:text-niger-orange transition-colors">
+              <Link to="/tarifs" className="text-gray-600 hover:text-niger-orange transition-colors">
                 Tarifs
-              </a>
-              <a href="#contact" className="text-gray-600 hover:text-niger-orange transition-colors">
+              </Link>
+              <Link to="/contact" className="text-gray-600 hover:text-niger-orange transition-colors">
                 Contact
-              </a>
+              </Link>
               <div className="flex flex-col space-y-2 pt-4">
                 <Link to="/creer-compte">
                   <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white w-full">

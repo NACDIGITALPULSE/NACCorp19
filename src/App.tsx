@@ -8,6 +8,10 @@ import Index from "./pages/Index";
 import Registration from "./pages/Registration";
 import CreateAccount from "./pages/CreateAccount";
 import OnlineVisibility from "./pages/OnlineVisibility";
+import WebsiteService from "./pages/WebsiteService";
+import LogoService from "./pages/LogoService";
+import Pricing from "./pages/Pricing";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +27,10 @@ const App = () => (
           <Route path="/creer-compte" element={<CreateAccount />} />
           <Route path="/inscription-nif-rccm" element={<Registration />} />
           <Route path="/visibilite-en-ligne" element={<OnlineVisibility />} />
+          <Route path="/website-service" element={<WebsiteService />} />
+          <Route path="/logo-service" element={<LogoService />} />
+          <Route path="/tarifs" element={<Pricing />} />
+          <Route path="/contact" element={<Contact />} />
           {/* Ancien lien pour compatibilité */}
           <Route path="/inscription" element={<Registration />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

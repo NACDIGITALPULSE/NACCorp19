@@ -4,13 +4,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useRegistrationWorkflow } from '@/hooks/useRegistrationWorkflow';
-import { ArrowLeft, ArrowRight, Check, User, Building, FileText, Upload, UserPlus } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, User, Building, FileText, Upload, UserPlus, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
 import { FileUpload } from '@/components/FileUpload';
 
 const Registration = () => {
-  const { currentStep, registrationData, updateData, updateDocuments, nextStep, prevStep, submitRegistration, totalSteps } = useRegistrationWorkflow();
+  const { currentStep, registrationData, updateData, updateDocuments, nextStep, prevStep, submitRegistration, getNifTypeDescription, totalSteps } = useRegistrationWorkflow();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,6 +33,16 @@ const Registration = () => {
         toast({
           title: "Erreur",
           description: "Les mots de passe ne correspondent pas",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+    if (currentStep === 3) {
+      if (!registrationData.nifType) {
+        toast({
+          title: "Erreur",
+          description: "Veuillez sélectionner un type de NIF",
           variant: "destructive"
         });
         return;
@@ -66,12 +76,38 @@ const Registration = () => {
   const steps = [
     { number: 1, title: "Création de compte", icon: UserPlus },
     { number: 2, title: "Informations entreprise", icon: Building },
-    { number: 3, title: "Documents requis", icon: Upload },
+    { number: 3, title: "Type de NIF", icon: AlertCircle },
     { number: 4, title: "Services demandés", icon: FileText },
-    { number: 5, title: "Confirmation", icon: Check }
+    { number: 5, title: "Documents requis", icon: Upload },
+    { number: 6, title: "Confirmation", icon: Check }
   ];
 
   const StepIcon = steps[currentStep - 1]?.icon;
+
+  const nifTypes = [
+    {
+      value: 'NIF-P',
+      title: 'NIF-P (Personne Physique)',
+      description: 'Pour entrepreneurs individuels, professionnels libéraux',
+      price: '15,000 FCFA',
+      features: ['Création du NIF personnel', 'Dossier complet', 'Délai: 2-3 jours']
+    },
+    {
+      value: 'NIF-R',
+      title: 'NIF-R (Personne Morale)',
+      description: 'Pour sociétés, associations, coopératives',
+      price: '25,000 FCFA',
+      features: ['Création du NIF entreprise', 'RCCM inclus', 'Délai: 3-5 jours'],
+      recommended: true
+    },
+    {
+      value: 'NIF-S',
+      title: 'NIF-S (Structure Spéciale)',
+      description: 'Pour ONG, organisations internationales',
+      price: 'Sur devis',
+      features: ['Étude personnalisée', 'Accompagnement spécialisé', 'Délai: 5-7 jours']
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -251,43 +287,60 @@ const Registration = () => {
               </div>
             )}
 
-            {/* Étape 3: Documents requis */}
+            {/* Étape 3: Type de NIF */}
             {currentStep === 3 && (
               <div className="space-y-6">
                 <div className="bg-blue-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-blue-900 mb-2">Documents requis</h3>
+                  <h3 className="text-lg font-semibold text-blue-900 mb-2">Choisissez votre type de NIF</h3>
                   <p className="text-blue-700 text-sm">
-                    Veuillez télécharger les documents suivants pour finaliser votre demande.
+                    Sélectionnez le type de Numéro d'Identification Fiscal adapté à votre situation.
                   </p>
                 </div>
                 
                 <div className="space-y-4">
-                  <div>
-                    <Label>Pièce d'identité (obligatoire)</Label>
-                    <FileUpload
-                      onFileSelect={(file) => updateDocuments('identityCard', file)}
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      currentFile={registrationData.documents.identityCard}
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label>Justificatif de domicile (obligatoire)</Label>
-                    <FileUpload
-                      onFileSelect={(file) => updateDocuments('proofOfAddress', file)}
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      currentFile={registrationData.documents.proofOfAddress}
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label>Statuts de l'entreprise (si applicable)</Label>
-                    <FileUpload
-                      onFileSelect={(file) => updateDocuments('companyStatutes', file)}
-                      accept=".pdf,.doc,.docx"
-                      currentFile={registrationData.documents.companyStatutes}
-                    />
-                  </div>
+                  {nifTypes.map((nifType) => (
+                    <label
+                      key={nifType.value}
+                      className={`block p-4 border rounded-lg cursor-pointer transition-all ${
+                        registrationData.nifType === nifType.value
+                          ? 'border-niger-orange bg-niger-orange/5'
+                          : 'border-gray-200 hover:border-niger-orange/50'
+                      } ${nifType.recommended ? 'ring-2 ring-niger-green/20' : ''}`}
+                    >
+                      <input
+                        type="radio"
+                        name="nifType"
+                        value={nifType.value}
+                        checked={registrationData.nifType === nifType.value}
+                        onChange={(e) => handleInputChange('nifType', e.target.value)}
+                        className="sr-only"
+                      />
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2">
+                            <h4 className="font-semibold text-gray-900">{nifType.title}</h4>
+                            {nifType.recommended && (
+                              <span className="bg-niger-green text-white px-2 py-1 rounded-full text-xs font-medium">
+                                Recommandé
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-gray-600 text-sm mt-1">{nifType.description}</p>
+                          <ul className="mt-2 space-y-1">
+                            {nifType.features.map((feature, index) => (
+                              <li key={index} className="text-sm text-gray-700 flex items-center">
+                                <Check className="w-3 h-3 text-niger-green mr-2 flex-shrink-0" />
+                                {feature}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="text-right ml-4">
+                          <div className="font-bold text-niger-orange">{nifType.price}</div>
+                        </div>
+                      </div>
+                    </label>
+                  ))}
                 </div>
               </div>
             )}
@@ -345,8 +398,49 @@ const Registration = () => {
               </div>
             )}
 
-            {/* Étape 5: Confirmation */}
+            {/* Étape 5: Documents requis */}
             {currentStep === 5 && (
+              <div className="space-y-6">
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h3 className="text-lg font-semibold text-blue-900 mb-2">Documents requis</h3>
+                  <p className="text-blue-700 text-sm">
+                    Veuillez télécharger les documents suivants pour finaliser votre demande.
+                  </p>
+                </div>
+                
+                <div className="space-y-4">
+                  <div>
+                    <Label>Pièce d'identité (obligatoire)</Label>
+                    <FileUpload
+                      onFileSelect={(file) => updateDocuments('identityCard', file)}
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      currentFile={registrationData.documents.identityCard}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Justificatif de domicile (obligatoire)</Label>
+                    <FileUpload
+                      onFileSelect={(file) => updateDocuments('proofOfAddress', file)}
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      currentFile={registrationData.documents.proofOfAddress}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Statuts de l'entreprise (si applicable)</Label>
+                    <FileUpload
+                      onFileSelect={(file) => updateDocuments('companyStatutes', file)}
+                      accept=".pdf,.doc,.docx"
+                      currentFile={registrationData.documents.companyStatutes}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Étape 6: Confirmation */}
+            {currentStep === 6 && (
               <div className="text-center space-y-6">
                 <div className="w-16 h-16 bg-niger-green/10 rounded-full flex items-center justify-center mx-auto">
                   <Check className="w-8 h-8 text-niger-green" />
@@ -366,6 +460,7 @@ const Registration = () => {
                     <li>• Entreprise : {registrationData.companyName}</li>
                     <li>• Contact : {registrationData.firstName} {registrationData.lastName}</li>
                     <li>• Email : {registrationData.email}</li>
+                    <li>• Type de NIF : {registrationData.nifType}</li>
                     {registrationData.needsNIF && <li>• ✓ Création NIF</li>}
                     {registrationData.needsRCCM && <li>• ✓ Enregistrement RCCM</li>}
                     {registrationData.needsLogo && <li>• ✓ Création de logo</li>}
@@ -381,7 +476,7 @@ const Registration = () => {
             )}
 
             {/* Navigation Buttons */}
-            {currentStep < 5 && (
+            {currentStep < 6 && (
               <div className="flex justify-between pt-6">
                 <Button
                   variant="outline"
@@ -393,7 +488,7 @@ const Registration = () => {
                   <span>Précédent</span>
                 </Button>
 
-                {currentStep < 4 ? (
+                {currentStep < 5 ? (
                   <Button
                     onClick={handleNext}
                     className="bg-niger-orange hover:bg-niger-orange-dark text-white flex items-center space-x-2"
