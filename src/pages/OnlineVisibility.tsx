@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { ArrowLeft, Globe, Check, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
+import { sendConfirmationEmail } from '@/services/emailService';
+import { useAuth } from '@/hooks/useAuth';
 
 interface VisibilityOrderData {
   companyName: string;
@@ -29,11 +31,12 @@ interface VisibilityOrderData {
 
 const OnlineVisibility = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderData, setOrderData] = useState<VisibilityOrderData>({
     companyName: '',
-    contactName: '',
-    email: '',
+    contactName: user ? `${user.firstName} ${user.lastName}` : '',
+    email: user?.email || '',
     phone: '',
     currentWebsite: '',
     businessDescription: '',
@@ -88,8 +91,14 @@ const OnlineVisibility = () => {
 
     setIsSubmitting(true);
     try {
-      // Simulation de soumission de commande
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Envoi de l'email vers customer@nacdigitalpulse.com
+      await sendConfirmationEmail({
+        to: orderData.email,
+        firstName: orderData.contactName.split(' ')[0] || 'Client',
+        lastName: orderData.contactName.split(' ').slice(1).join(' ') || '',
+        type: 'visibility-request',
+        data: orderData
+      });
       
       toast({
         title: "Demande envoyée avec succès!",

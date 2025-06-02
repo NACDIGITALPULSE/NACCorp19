@@ -1,10 +1,13 @@
+
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogIn } from "lucide-react";
+import { Menu, X, LogIn, User } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isAuthenticated, user, logout } = useAuth();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
@@ -36,20 +39,38 @@ const Header = () => {
             <Link to="/contact" className="text-gray-600 hover:text-niger-orange transition-colors">
               Contact
             </Link>
-            <Link to="/tableau-de-bord" className="text-gray-600 hover:text-niger-orange transition-colors">
-              Mon tableau de bord
-            </Link>
-            <Link to="/connexion">
-              <Button variant="ghost" className="text-gray-600 hover:text-niger-orange">
-                <LogIn className="w-4 h-4 mr-2" />
-                Se connecter
-              </Button>
-            </Link>
-            <Link to="/creer-compte">
-              <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white">
-                Créer un compte
-              </Button>
-            </Link>
+            
+            {isAuthenticated ? (
+              <>
+                <Link to="/tableau-de-bord" className="text-gray-600 hover:text-niger-orange transition-colors">
+                  Mon tableau de bord
+                </Link>
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm text-gray-600">
+                    Bonjour, {user?.firstName}
+                  </span>
+                  <Button onClick={logout} variant="ghost" className="text-gray-600 hover:text-niger-orange">
+                    <User className="w-4 h-4 mr-2" />
+                    Déconnexion
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Link to="/connexion">
+                  <Button variant="ghost" className="text-gray-600 hover:text-niger-orange">
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Se connecter
+                  </Button>
+                </Link>
+                <Link to="/creer-compte">
+                  <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white">
+                    Créer un compte
+                  </Button>
+                </Link>
+              </>
+            )}
+            
             <Link to="/inscription-nif-rccm">
               <Button className="bg-niger-orange hover:bg-niger-orange-dark text-white">
                 NIF & RCCM
@@ -84,21 +105,40 @@ const Header = () => {
               <Link to="/contact" className="text-gray-600 hover:text-niger-orange transition-colors">
                 Contact
               </Link>
-              <Link to="/tableau-de-bord" className="text-gray-600 hover:text-niger-orange transition-colors">
-                Mon tableau de bord
-              </Link>
+              
+              {isAuthenticated && (
+                <Link to="/tableau-de-bord" className="text-gray-600 hover:text-niger-orange transition-colors">
+                  Mon tableau de bord
+                </Link>
+              )}
+              
               <div className="flex flex-col space-y-2 pt-4">
-                <Link to="/connexion">
-                  <Button variant="ghost" className="text-gray-600 hover:text-niger-orange w-full justify-start">
-                    <LogIn className="w-4 h-4 mr-2" />
-                    Se connecter
-                  </Button>
-                </Link>
-                <Link to="/creer-compte">
-                  <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white w-full">
-                    Créer un compte
-                  </Button>
-                </Link>
+                {isAuthenticated ? (
+                  <>
+                    <span className="text-sm text-gray-600 px-3">
+                      Connecté en tant que {user?.firstName}
+                    </span>
+                    <Button onClick={logout} variant="ghost" className="text-gray-600 hover:text-niger-orange w-full justify-start">
+                      <User className="w-4 h-4 mr-2" />
+                      Déconnexion
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/connexion">
+                      <Button variant="ghost" className="text-gray-600 hover:text-niger-orange w-full justify-start">
+                        <LogIn className="w-4 h-4 mr-2" />
+                        Se connecter
+                      </Button>
+                    </Link>
+                    <Link to="/creer-compte">
+                      <Button variant="outline" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white w-full">
+                        Créer un compte
+                      </Button>
+                    </Link>
+                  </>
+                )}
+                
                 <Link to="/inscription-nif-rccm">
                   <Button className="bg-niger-orange hover:bg-niger-orange-dark text-white w-full">
                     NIF & RCCM

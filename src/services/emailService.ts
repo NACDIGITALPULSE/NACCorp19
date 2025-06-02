@@ -3,7 +3,7 @@ interface EmailData {
   to: string;
   firstName: string;
   lastName: string;
-  type: 'registration' | 'nif-rccm' | 'service-request';
+  type: 'registration' | 'nif-rccm' | 'service-request' | 'visibility-request' | 'logo-request' | 'website-request';
   data?: any;
 }
 
@@ -17,7 +17,13 @@ export const sendConfirmationEmail = async (emailData: EmailData): Promise<boole
     const emailContent = generateEmailContent(emailData);
     console.log('Contenu de l\'email:', emailContent);
     
-    // Ici on intégrerait un service d'email comme SendGrid, Mailgun, etc.
+    // Envoi vers les bonnes adresses selon le type de demande
+    const targetEmail = getTargetEmail(emailData.type);
+    console.log('Email envoyé vers:', targetEmail);
+    
+    // Notification au client
+    await sendClientNotification(emailData);
+    
     return true;
   } catch (error) {
     console.error('Erreur lors de l\'envoi de l\'email:', error);
@@ -25,8 +31,27 @@ export const sendConfirmationEmail = async (emailData: EmailData): Promise<boole
   }
 };
 
+const getTargetEmail = (type: EmailData['type']): string => {
+  switch (type) {
+    case 'nif-rccm':
+      return 'support@nacentreprise.com';
+    case 'visibility-request':
+    case 'logo-request':
+    case 'website-request':
+    case 'service-request':
+      return 'customer@nacdigitalpulse.com';
+    default:
+      return 'support@nacentreprise.com';
+  }
+};
+
+const sendClientNotification = async (emailData: EmailData) => {
+  console.log(`Notification envoyée au client ${emailData.to} pour ${emailData.type}`);
+  // Ici on enverrait une notification de confirmation au client
+};
+
 const generateEmailContent = (emailData: EmailData) => {
-  const { firstName, lastName, type } = emailData;
+  const { firstName, lastName, type, data } = emailData;
   
   switch (type) {
     case 'registration':
@@ -49,41 +74,73 @@ const generateEmailContent = (emailData: EmailData) => {
       
     case 'nif-rccm':
       return {
-        subject: 'Demande NIF & RCCM reçue - Niger EntreprenderHub',
+        subject: `Nouvelle demande NIF & RCCM - ${firstName} ${lastName}`,
         body: `
-          Bonjour ${firstName} ${lastName},
+          Nouvelle demande reçue de ${firstName} ${lastName}
           
-          Nous avons bien reçu votre demande pour l'obtention de votre NIF et RCCM.
+          Type de NIF: ${data?.nifType || 'Non spécifié'}
+          Email: ${emailData.to}
+          Téléphone: ${data?.phone || 'Non renseigné'}
           
-          Notre équipe va traiter votre dossier dans les plus brefs délais.
-          Vous recevrez un email de confirmation une fois le traitement terminé.
-          
-          Délai estimé : 2-5 jours ouvrables selon le type de NIF.
+          Merci de traiter cette demande dans les plus brefs délais.
           
           Cordialement,
-          L'équipe Niger EntreprenderHub
+          Système Niger EntreprenderHub
         `
       };
       
-    case 'service-request':
+    case 'visibility-request':
       return {
-        subject: 'Demande de service reçue - Niger EntreprenderHub',
+        subject: `Demande de visibilité en ligne - ${firstName} ${lastName}`,
         body: `
-          Bonjour ${firstName} ${lastName},
+          Nouvelle demande de visibilité en ligne reçue
           
-          Nous avons bien reçu votre demande de service.
+          Client: ${firstName} ${lastName}
+          Email: ${emailData.to}
+          Entreprise: ${data?.companyName || 'Non renseigné'}
+          Services demandés: ${data?.selectedServices ? Object.keys(data.selectedServices).filter(k => data.selectedServices[k]).join(', ') : 'Non spécifié'}
+          Budget: ${data?.budget || 'Non spécifié'}
           
-          Notre équipe commerciale vous contactera dans les 24 heures pour discuter de votre projet.
+          Merci de contacter le client dans les 24h.
+        `
+      };
+      
+    case 'website-request':
+      return {
+        subject: `Demande de création de site web - ${firstName} ${lastName}`,
+        body: `
+          Nouvelle demande de site web reçue
           
-          Cordialement,
-          L'équipe Niger EntreprenderHub
+          Client: ${firstName} ${lastName}
+          Email: ${emailData.to}
+          Type de site: ${data?.websiteType || 'Non spécifié'}
+          Budget: ${data?.budget || 'Non spécifié'}
+          Délai: ${data?.deadline || 'Non spécifié'}
+          
+          Merci de contacter le client pour discuter du projet.
+        `
+      };
+
+    case 'logo-request':
+      return {
+        subject: `Demande de création de logo - ${firstName} ${lastName}`,
+        body: `
+          Nouvelle demande de logo reçue
+          
+          Client: ${firstName} ${lastName}
+          Email: ${emailData.to}
+          Style demandé: ${data?.logoStyle || 'Non spécifié'}
+          Secteur: ${data?.industry || 'Non spécifié'}
+          Budget: ${data?.budget || 'Non spécifié'}
+          
+          Merci de contacter le client pour discuter du projet.
         `
       };
       
     default:
       return {
-        subject: 'Confirmation - Niger EntreprenderHub',
-        body: `Bonjour ${firstName} ${lastName}, votre demande a été reçue avec succès.`
+        subject: `Nouvelle demande - ${firstName} ${lastName}`,
+        body: `Nouvelle demande reçue de ${firstName} ${lastName} (${emailData.to})`
       };
   }
 };

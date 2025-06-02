@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Mail, Key, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,6 +15,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,21 +32,27 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Simulation de connexion - dans un vrai projet, ceci serait un appel API
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const success = await login(email, password);
       
-      // Simulation de succès
-      toast({
-        title: "Connexion réussie!",
-        description: "Vous êtes maintenant connecté à votre compte.",
-      });
-      
-      // Redirection vers le tableau de bord
-      navigate('/tableau-de-bord');
+      if (success) {
+        toast({
+          title: "Connexion réussie!",
+          description: "Vous êtes maintenant connecté à votre compte.",
+        });
+        
+        // Redirection vers le tableau de bord
+        navigate('/tableau-de-bord');
+      } else {
+        toast({
+          title: "Erreur de connexion",
+          description: "Email ou mot de passe incorrect",
+          variant: "destructive"
+        });
+      }
     } catch (error) {
       toast({
         title: "Erreur de connexion",
-        description: "Email ou mot de passe incorrect",
+        description: "Une erreur est survenue lors de la connexion",
         variant: "destructive"
       });
     } finally {
