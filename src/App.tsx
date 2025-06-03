@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +20,9 @@ import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import TaxDeclaration from "./pages/TaxDeclaration";
 import Accounting from "./pages/Accounting";
+import Journal from "./pages/Journal";
+import Simulator from "./pages/Simulator";
+import AboutUs from "./pages/AboutUs";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +38,9 @@ const App = () => (
             <Route path="/accueil" element={<Index />} />
             <Route path="/creer-compte" element={<CreateAccount />} />
             <Route path="/connexion" element={<Login />} />
+            <Route path="/journal" element={<Journal />} />
+            <Route path="/simulateur" element={<Simulator />} />
+            <Route path="/a-propos" element={<AboutUs />} />
             <Route path="/tableau-de-bord" element={
               <ProtectedRoute>
                 <Dashboard />
