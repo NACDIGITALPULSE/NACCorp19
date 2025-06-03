@@ -1,5 +1,5 @@
 
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 
 interface User {
   id: string;
@@ -18,7 +18,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
@@ -26,16 +26,26 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
     // Vérifier si l'utilisateur est déjà connecté
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
+      try {
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Error parsing stored user data:', error);
+        localStorage.removeItem('user');
+      }
     }
   }, []);
 
@@ -44,7 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Simulation de connexion - dans un vrai projet, ceci serait un appel API
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const userData = {
+      const userData: User = {
         id: 'user-' + Date.now(),
         email,
         firstName: 'Utilisateur',
@@ -56,6 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem('user', JSON.stringify(userData));
       return true;
     } catch (error) {
+      console.error('Login error:', error);
       return false;
     }
   };
@@ -64,7 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const newUser = {
+      const newUser: User = {
         id: 'user-' + Date.now(),
         email: userData.email,
         firstName: userData.firstName,
@@ -76,18 +87,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem('user', JSON.stringify(newUser));
       return true;
     } catch (error) {
+      console.error('Registration error:', error);
       return false;
     }
   };
 
-  const logout = () => {
+  const logout = (): void => {
     setUser(null);
     setIsAuthenticated(false);
     localStorage.removeItem('user');
   };
 
+  const contextValue: AuthContextType = {
+    user,
+    isAuthenticated,
+    login,
+    logout,
+    register
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
