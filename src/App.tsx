@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +17,8 @@ import Pricing from "./pages/Pricing";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
+import TaxDeclaration from "./pages/TaxDeclaration";
+import Accounting from "./pages/Accounting";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,16 @@ const App = () => (
             <Route path="/logo-service" element={
               <ProtectedRoute>
                 <LogoService />
+              </ProtectedRoute>
+            } />
+            <Route path="/declaration-fiscale" element={
+              <ProtectedRoute>
+                <TaxDeclaration />
+              </ProtectedRoute>
+            } />
+            <Route path="/comptabilite" element={
+              <ProtectedRoute>
+                <Accounting />
               </ProtectedRoute>
             } />
             <Route path="/tarifs" element={<Pricing />} />
