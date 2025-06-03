@@ -24,6 +24,7 @@ import Accounting from "./pages/Accounting";
 import Journal from "./pages/Journal";
 import Simulator from "./pages/Simulator";
 import AboutUs from "./pages/AboutUs";
+import Offshore from "./pages/Offshore";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/journal" element={<Journal />} />
               <Route path="/simulateur" element={<Simulator />} />
               <Route path="/a-propos" element={<AboutUs />} />
+              <Route path="/offshore" element={<Offshore />} />
               <Route path="/tableau-de-bord" element={
                 <ProtectedRoute>
                   <Dashboard />

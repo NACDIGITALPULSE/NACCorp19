@@ -1,10 +1,16 @@
 
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogIn, User } from "lucide-react";
+import { Menu, X, LogIn, User, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,8 +23,12 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-3 group">
-              <div className="w-10 h-10 bg-gradient-to-r from-niger-orange to-niger-green rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-                <span className="text-white font-bold text-lg">NE</span>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                <img 
+                  src="/lovable-uploads/4d7841ab-db59-4429-8ff2-fca10017244f.png" 
+                  alt="NACCorp Logo" 
+                  className="w-full h-full object-contain"
+                />
               </div>
               <span className="font-playfair font-bold text-xl text-gray-900 group-hover:text-niger-orange transition-colors dark:text-white dark:group-hover:text-niger-orange">
                 Niger EntreprenderHub
@@ -26,9 +36,9 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <div className="flex items-center space-x-6">
+          {/* Desktop Navigation - Tous alignés sur une ligne */}
+          <nav className="hidden lg:flex items-center space-x-4">
+            <div className="flex items-center space-x-4">
               <div className="relative group">
                 <a href="/#services" className="text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                   Services
@@ -37,21 +47,34 @@ const Header = () => {
               <Link to="/journal" className="text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                 Journal
               </Link>
-              <Link to="/simulateur" className="text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
-                Simulateur
-              </Link>
-              <Link to="/tarifs" className="text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
-                Tarifs
-              </Link>
+              
+              {/* Tarifs avec sous-menu Simulateur */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
+                  Tarifs <ChevronDown className="w-4 h-4 ml-1" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem asChild>
+                    <Link to="/tarifs">Voir tous les tarifs</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/simulateur">Simulateur de coûts</Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               <Link to="/a-propos" className="text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                 À propos
               </Link>
               <Link to="/contact" className="text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                 Contact
               </Link>
+              <Link to="/offshore" className="text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
+                Offshore
+              </Link>
             </div>
             
-            <div className="flex items-center space-x-3 border-l border-gray-200 pl-6 dark:border-gray-700">
+            <div className="flex items-center space-x-3 border-l border-gray-200 pl-4 dark:border-gray-700">
               <ThemeToggle />
               
               {isAuthenticated ? (
@@ -94,7 +117,7 @@ const Header = () => {
           </nav>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center space-x-2">
+          <div className="lg:hidden flex items-center space-x-2">
             <ThemeToggle />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -107,7 +130,7 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-100 bg-white/95 backdrop-blur-md dark:bg-gray-900/95 dark:border-gray-800">
+          <div className="lg:hidden py-4 border-t border-gray-100 bg-white/95 backdrop-blur-md dark:bg-gray-900/95 dark:border-gray-800">
             <div className="flex flex-col space-y-3">
               <a href="/#services" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                 Services
@@ -115,17 +138,20 @@ const Header = () => {
               <Link to="/journal" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                 Journal
               </Link>
-              <Link to="/simulateur" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
-                Simulateur
-              </Link>
               <Link to="/tarifs" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                 Tarifs
+              </Link>
+              <Link to="/simulateur" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 pl-8 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
+                • Simulateur
               </Link>
               <Link to="/a-propos" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                 À propos
               </Link>
               <Link to="/contact" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                 Contact
+              </Link>
+              <Link to="/offshore" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
+                Offshore
               </Link>
               
               {isAuthenticated && (

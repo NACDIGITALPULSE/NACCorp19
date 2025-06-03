@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,20 +36,20 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Couleurs spécifiques Niger */
+    --niger-orange: 237 76% 52%;
+    --niger-orange-dark: 237 76% 42%;
+    --niger-green: 126 47% 45%;
+    --niger-green-dark: 126 47% 35%;
+    --niger-sand: 45 29% 90%;
   }
 
   .dark {
@@ -79,6 +80,7 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+    
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -87,6 +89,13 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Couleurs spécifiques Niger - mode sombre */
+    --niger-orange: 237 76% 60%;
+    --niger-orange-dark: 237 76% 50%;
+    --niger-green: 126 47% 55%;
+    --niger-green-dark: 126 47% 45%;
+    --niger-sand: 45 29% 15%;
   }
 }
 
@@ -97,5 +106,32 @@
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .niger-orange {
+    color: hsl(var(--niger-orange));
+  }
+  
+  .bg-niger-orange {
+    background-color: hsl(var(--niger-orange));
+  }
+  
+  .border-niger-orange {
+    border-color: hsl(var(--niger-orange));
+  }
+  
+  .niger-green {
+    color: hsl(var(--niger-green));
+  }
+  
+  .bg-niger-green {
+    background-color: hsl(var(--niger-green));
+  }
+  
+  .bg-niger-sand {
+    background-color: hsl(var(--niger-sand));
   }
 }
