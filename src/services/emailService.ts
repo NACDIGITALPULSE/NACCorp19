@@ -7,6 +7,28 @@ interface EmailData {
   data?: any;
 }
 
+interface SimpleEmailData {
+  to: string;
+  subject: string;
+  html: string;
+}
+
+export const sendEmail = async (emailData: SimpleEmailData): Promise<boolean> => {
+  try {
+    console.log('Envoi de l\'email à:', emailData.to);
+    console.log('Sujet:', emailData.subject);
+    console.log('Contenu:', emailData.html);
+    
+    // Simulation d'envoi d'email - Dans un vrai projet, ceci serait un appel API
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    return true;
+  } catch (error) {
+    console.error('Erreur lors de l\'envoi de l\'email:', error);
+    return false;
+  }
+};
+
 export const sendConfirmationEmail = async (emailData: EmailData): Promise<boolean> => {
   try {
     console.log('Envoi de l\'email de confirmation à:', emailData.to);
