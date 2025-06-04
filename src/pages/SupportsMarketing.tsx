@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Megaphone, FileText, Image } from 'lucide-react';
+import { Megaphone } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
@@ -32,12 +32,40 @@ const SupportsMarketing = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Demande envoyée !",
-      description: "Nous vous contactons sous 24h pour vos supports marketing.",
-    });
+    
+    // Simulation d'envoi d'email à customer@nacdigitalpulse.com
+    try {
+      console.log(`Envoi demande supports marketing vers customer@nacdigitalpulse.com pour: ${formData.companyName}`);
+      
+      toast({
+        title: "Demande envoyée !",
+        description: "Votre demande a été envoyée à customer@nacdigitalpulse.com. Nous vous contactons sous 24h.",
+      });
+      
+      // Reset form
+      setFormData({
+        companyName: '',
+        description: '',
+        needFlyers: false,
+        needBrochures: false,
+        needPosters: false,
+        needBanners: false,
+        needSocialMedia: false,
+        needNewsletters: false,
+        targetMessage: '',
+        budget: '',
+        email: '',
+        phone: ''
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite lors de l'envoi.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -60,7 +88,7 @@ const SupportsMarketing = () => {
             <CardHeader>
               <CardTitle className="dark:text-white">Demande de Supports Marketing</CardTitle>
               <CardDescription className="dark:text-gray-400">
-                Dites-nous quels supports marketing vous souhaitez créer
+                Dites-nous quels supports marketing vous souhaitez créer. Votre demande sera envoyée à customer@nacdigitalpulse.com
               </CardDescription>
             </CardHeader>
             <CardContent>

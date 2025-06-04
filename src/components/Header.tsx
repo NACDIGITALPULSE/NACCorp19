@@ -16,17 +16,14 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-3 group">
-              <div className="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+            <Link to="/" className="flex items-center group">
+              <div className="w-16 h-16 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                 <img 
                   src="/lovable-uploads/4d7841ab-db59-4429-8ff2-fca10017244f.png" 
                   alt="NACCORP Logo" 
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="font-playfair font-bold text-2xl text-gray-900 group-hover:text-niger-orange transition-colors dark:text-white dark:group-hover:text-niger-orange">
-                NACCORP
-              </span>
             </Link>
           </div>
 
