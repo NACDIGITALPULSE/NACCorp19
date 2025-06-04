@@ -103,6 +103,10 @@ const Offshore = () => {
     return total;
   };
 
+  // Obtenir l'icône du step actuel
+  const currentStepData = steps.find(s => s.id === currentStep);
+  const CurrentStepIcon = currentStepData?.icon;
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
@@ -202,10 +206,10 @@ const Offshore = () => {
             <Card className="dark:bg-gray-800 dark:border-gray-700">
               <CardHeader>
                 <CardTitle className="flex items-center dark:text-white">
-                  {steps.find(s => s.id === currentStep)?.icon && (
-                    <steps.find(s => s.id === currentStep)!.icon className="w-6 h-6 mr-3" />
+                  {CurrentStepIcon && (
+                    <CurrentStepIcon className="w-6 h-6 mr-3" />
                   )}
-                  {steps.find(s => s.id === currentStep)?.title}
+                  {currentStepData?.title}
                 </CardTitle>
                 <CardDescription className="dark:text-gray-400">
                   Étape {currentStep} sur {steps.length}
