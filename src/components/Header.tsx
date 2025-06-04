@@ -1,16 +1,10 @@
 
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogIn, User, ChevronDown } from "lucide-react";
+import { Menu, X, LogIn, User } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,20 +17,20 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-3 group">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                 <img 
                   src="/lovable-uploads/4d7841ab-db59-4429-8ff2-fca10017244f.png" 
-                  alt="NACCorp Logo" 
+                  alt="NACCORP Logo" 
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="font-playfair font-bold text-xl text-gray-900 group-hover:text-niger-orange transition-colors dark:text-white dark:group-hover:text-niger-orange">
-                Niger EntreprenderHub
+              <span className="font-playfair font-bold text-2xl text-gray-900 group-hover:text-niger-orange transition-colors dark:text-white dark:group-hover:text-niger-orange">
+                NACCORP
               </span>
             </Link>
           </div>
 
-          {/* Desktop Navigation - Tous alignés sur une ligne */}
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-4">
             <div className="flex items-center space-x-4">
               <div className="relative group">
@@ -47,22 +41,6 @@ const Header = () => {
               <Link to="/journal" className="text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                 Journal
               </Link>
-              
-              {/* Tarifs avec sous-menu Simulateur */}
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
-                  Tarifs <ChevronDown className="w-4 h-4 ml-1" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem asChild>
-                    <Link to="/tarifs">Voir tous les tarifs</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/simulateur">Simulateur de coûts</Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
               <Link to="/a-propos" className="text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                 À propos
               </Link>
@@ -95,13 +73,13 @@ const Header = () => {
               ) : (
                 <div className="flex items-center space-x-3">
                   <Link to="/connexion">
-                    <Button variant="ghost" size="sm" className="text-gray-700 hover:text-niger-orange dark:text-gray-300 dark:hover:text-niger-orange">
+                    <Button variant="ghost" size="sm" className="text-gray-700 hover:text-niger-orange hover:bg-niger-orange/10 dark:text-gray-300 dark:hover:text-niger-orange dark:hover:bg-niger-orange/10">
                       <LogIn className="w-4 h-4 mr-2" />
                       Se connecter
                     </Button>
                   </Link>
                   <Link to="/creer-compte">
-                    <Button variant="outline" size="sm" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white">
+                    <Button variant="outline" size="sm" className="border-niger-orange text-niger-orange hover:bg-niger-orange hover:text-white dark:border-niger-orange dark:text-niger-orange dark:hover:bg-niger-orange dark:hover:text-white">
                       Créer un compte
                     </Button>
                   </Link>
@@ -137,12 +115,6 @@ const Header = () => {
               </a>
               <Link to="/journal" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                 Journal
-              </Link>
-              <Link to="/tarifs" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
-                Tarifs
-              </Link>
-              <Link to="/simulateur" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 pl-8 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
-                • Simulateur
               </Link>
               <Link to="/a-propos" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                 À propos

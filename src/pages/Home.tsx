@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
@@ -164,7 +163,7 @@ const Home = () => {
                       {slide.description}
                     </p>
                     <Link to={slide.link}>
-                      <Button size="lg" variant="secondary" className="bg-white text-gray-800 hover:bg-gray-100 animate-scale-in hover:scale-105 transition-transform duration-200" style={{animationDelay: '0.6s'}}>
+                      <Button size="lg" variant="secondary" className="bg-white text-gray-800 hover:bg-gray-100 animate-scale-in hover:scale-105 transition-transform" style={{animationDelay: '0.6s'}}>
                         {slide.cta}
                         <ArrowRight className="ml-2 w-5 h-5" />
                       </Button>
@@ -193,7 +192,7 @@ const Home = () => {
       {/* Quick Actions */}
       <section className="py-8 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <Link to="/inscription-nif-rccm" className="group">
               <Button size="lg" className="bg-niger-orange hover:bg-niger-orange-dark text-white w-full py-6 group-hover:scale-105 transition-transform">
                 <Building className="mr-2 w-5 h-5" />
@@ -201,14 +200,20 @@ const Home = () => {
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/simulateur" className="group">
+            <Link to="/tarifs" className="group">
               <Button size="lg" variant="outline" className="border-niger-green text-niger-green hover:bg-niger-green hover:text-white w-full py-6 group-hover:scale-105 transition-transform">
+                <Calculator className="mr-2 w-5 h-5" />
+                Voir nos tarifs
+              </Button>
+            </Link>
+            <Link to="/simulateur" className="group">
+              <Button size="lg" variant="outline" className="border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-white w-full py-6 group-hover:scale-105 transition-transform">
                 <Calculator className="mr-2 w-5 h-5" />
                 Simulateur TVA
               </Button>
             </Link>
             <Link to="/journal" className="group">
-              <Button size="lg" variant="outline" className="border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-white w-full py-6 group-hover:scale-105 transition-transform">
+              <Button size="lg" variant="outline" className="border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white w-full py-6 group-hover:scale-105 transition-transform">
                 <FileText className="mr-2 w-5 h-5" />
                 Actualités
               </Button>

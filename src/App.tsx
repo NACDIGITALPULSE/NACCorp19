@@ -25,6 +25,11 @@ import Journal from "./pages/Journal";
 import Simulator from "./pages/Simulator";
 import AboutUs from "./pages/AboutUs";
 import Offshore from "./pages/Offshore";
+import CharteGraphique from "./pages/CharteGraphique";
+import SupportsMarketing from "./pages/SupportsMarketing";
+import PackEntrepreneur from "./pages/PackEntrepreneur";
+import CentreAide from "./pages/CentreAide";
+import NotreEquipe from "./pages/NotreEquipe";
 
 const queryClient = new QueryClient();
 
@@ -43,8 +48,23 @@ const App = () => (
               <Route path="/connexion" element={<Login />} />
               <Route path="/journal" element={<Journal />} />
               <Route path="/simulateur" element={<Simulator />} />
+              <Route path="/tarifs" element={<Pricing />} />
               <Route path="/a-propos" element={<AboutUs />} />
               <Route path="/offshore" element={<Offshore />} />
+              <Route path="/contact" element={<Contact />} />
+              
+              {/* Services */}
+              <Route path="/charte-graphique" element={<CharteGraphique />} />
+              <Route path="/supports-marketing" element={<SupportsMarketing />} />
+              <Route path="/pack-entrepreneur" element={<PackEntrepreneur />} />
+              
+              {/* Support */}
+              <Route path="/centre-aide" element={<CentreAide />} />
+              
+              {/* Entreprise */}
+              <Route path="/notre-equipe" element={<NotreEquipe />} />
+              
+              {/* Protected Routes */}
               <Route path="/tableau-de-bord" element={
                 <ProtectedRoute>
                   <Dashboard />
@@ -80,9 +100,8 @@ const App = () => (
                   <Accounting />
                 </ProtectedRoute>
               } />
-              <Route path="/tarifs" element={<Pricing />} />
-              <Route path="/contact" element={<Contact />} />
-              {/* Ancien lien pour compatibilité */}
+              
+              {/* Compatibility */}
               <Route path="/inscription" element={
                 <ProtectedRoute>
                   <Registration />

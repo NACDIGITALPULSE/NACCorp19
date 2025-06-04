@@ -1,254 +1,168 @@
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Users, Target, Award, Globe, Heart, Lightbulb, Shield, Rocket } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Building2, Target, Users, Award, Heart, Zap } from "lucide-react";
 
 const AboutUs = () => {
   const values = [
     {
-      icon: Heart,
-      title: "Passion",
-      description: "Nous sommes passionnés par l'entrepreneuriat et le développement économique du Niger"
-    },
-    {
-      icon: Shield,
-      title: "Confiance",
-      description: "Transparence et intégrité dans toutes nos interactions avec nos clients"
-    },
-    {
-      icon: Lightbulb,
-      title: "Innovation",
-      description: "Solutions technologiques modernes pour simplifier vos démarches administratives"
-    },
-    {
-      icon: Rocket,
+      icon: Target,
       title: "Excellence",
-      description: "Engagement à fournir des services de qualité supérieure à chaque étape"
+      description: "Nous nous engageons à fournir des services de la plus haute qualité pour garantir votre succès."
+    },
+    {
+      icon: Users,
+      title: "Accompagnement",
+      description: "Nous vous accompagnons à chaque étape de votre parcours entrepreneurial avec expertise et bienveillance."
+    },
+    {
+      icon: Zap,
+      title: "Innovation",
+      description: "Nous utilisons les dernières technologies pour simplifier et accélérer vos démarches administratives."
+    },
+    {
+      icon: Heart,
+      title: "Engagement",
+      description: "Nous sommes profondément engagés dans le développement de l'écosystème entrepreneurial nigérien."
     }
-  ];
-
-  const team = [
-    {
-      name: "Amadou Diallo",
-      role: "Directeur Général",
-      image: "👨‍💼",
-      description: "Expert en développement économique avec 15 ans d'expérience"
-    },
-    {
-      name: "Fatima Ousmane",
-      role: "Responsable Juridique",
-      image: "👩‍⚖️",
-      description: "Spécialiste en droit des affaires et procédures administratives"
-    },
-    {
-      name: "Ibrahim Moussa",
-      role: "Chef de Projet Digital",
-      image: "👨‍💻",
-      description: "Expert en transformation digitale et solutions technologiques"
-    },
-    {
-      name: "Aïcha Abdou",
-      role: "Conseillère Clientèle",
-      image: "👩‍💼",
-      description: "Accompagnement personnalisé des entrepreneurs dans leurs projets"
-    }
-  ];
-
-  const stats = [
-    { number: "500+", label: "Entreprises créées", icon: "🏢" },
-    { number: "1000+", label: "Clients satisfaits", icon: "😊" },
-    { number: "50+", label: "Logos créés", icon: "🎨" },
-    { number: "24/7", label: "Support disponible", icon: "📞" }
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
       
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4 bg-gradient-to-r from-niger-orange to-niger-green relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
-        
-        <div className="max-w-4xl mx-auto text-center text-white relative z-10">
-          <h1 className="font-playfair text-4xl md:text-5xl font-bold mb-6">
-            À propos de Niger EntreprenderHub
+      <section className="pt-24 pb-16 px-4 bg-gradient-to-r from-niger-orange to-niger-green text-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <Building2 className="w-16 h-16 mx-auto mb-6" />
+          <h1 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
+            À Propos de NACCORP
           </h1>
-          <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
-            Nous sommes la plateforme de référence pour simplifier l'entrepreneuriat au Niger. 
-            Notre mission est d'accompagner chaque entrepreneur dans la réalisation de ses projets.
+          <p className="text-xl opacity-90">
+            Un projet NAC ENTREPRISE en collaboration avec NAC DIGITAL PULSE
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 px-4 py-2">
-              <Target className="w-4 h-4 mr-2" />
-              Mission claire
-            </Badge>
-            <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 px-4 py-2">
-              <Users className="w-4 h-4 mr-2" />
-              Équipe experte
-            </Badge>
-            <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 px-4 py-2">
-              <Award className="w-4 h-4 mr-2" />
-              Résultats prouvés
-            </Badge>
-          </div>
         </div>
       </section>
 
-      {/* Statistics */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center group">
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">{stat.icon}</div>
-                <div className="text-3xl font-bold text-niger-orange mb-2">{stat.number}</div>
-                <div className="text-gray-600">{stat.label}</div>
-              </div>
-            ))}
-          </div>
+      <div className="max-w-6xl mx-auto px-4 py-16">
+        {/* Mission */}
+        <div className="mb-16">
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl md:text-3xl mb-4 dark:text-white">Notre Mission</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center">
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                NACCORP a pour mission de démocratiser l'entrepreneuriat au Niger en simplifiant 
+                toutes les démarches administratives et en offrant des services digitaux de qualité. 
+                Nous croyons que chaque idée d'entreprise mérite d'être concrétisée facilement et rapidement.
+              </p>
+            </CardContent>
+          </Card>
         </div>
-      </section>
 
-      {/* Our Story */}
-      <section className="py-16 px-4 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                Notre Histoire
-              </h2>
-              <div className="space-y-4 text-gray-600">
-                <p>
-                  Niger EntreprenderHub est née de la volonté de simplifier l'écosystème entrepreneurial nigérien. 
-                  Conscients des défis que rencontrent les entrepreneurs dans leurs démarches administratives, 
-                  nous avons créé une plateforme digitale innovante.
+        {/* About NAC */}
+        <div className="mb-16">
+          <div className="grid md:grid-cols-2 gap-8">
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center dark:text-white">
+                  <Building2 className="w-6 h-6 mr-3 text-niger-orange" />
+                  NAC ENTREPRISE
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  NAC ENTREPRISE est une société spécialisée dans l'accompagnement entrepreneurial 
+                  et les services aux entreprises. Forte de son expertise locale, elle comprend 
+                  parfaitement les défis et opportunités du marché nigérien.
                 </p>
-                <p>
-                  Depuis notre création, nous avons accompagné plus de 1000 entrepreneurs dans la concrétisation 
-                  de leurs projets, de la création de leur statut juridique jusqu'au développement de leur 
-                  identité visuelle.
+              </CardContent>
+            </Card>
+
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center dark:text-white">
+                  <Zap className="w-6 h-6 mr-3 text-niger-green" />
+                  NAC DIGITAL PULSE
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  NAC DIGITAL PULSE apporte son expertise technologique et digitale pour créer 
+                  des solutions innovantes. Cette synergie permet d'offrir une expérience 
+                  utilisateur exceptionnelle et des outils modernes.
                 </p>
-                <p>
-                  Notre expertise couvre tous les aspects de l'entrepreneuriat : démarches administratives, 
-                  services fiscaux, création d'identité visuelle, et développement de présence digitale.
-                </p>
-              </div>
-              <div className="mt-8">
-                <Link to="/contact">
-                  <Button className="bg-niger-orange hover:bg-niger-orange-dark text-white">
-                    Contactez-nous
-                  </Button>
-                </Link>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="bg-gradient-to-r from-niger-orange to-niger-green rounded-2xl p-8 text-white text-center">
-                <Globe className="w-24 h-24 mx-auto mb-6 opacity-80" />
-                <h3 className="text-2xl font-bold mb-4">Notre Vision</h3>
-                <p className="text-lg opacity-90">
-                  Faire du Niger un hub entrepreneurial dynamique où chaque idée peut devenir réalité 
-                  grâce à des outils digitaux accessibles et efficaces.
-                </p>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      </section>
 
-      {/* Values */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Nos Valeurs
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Les principes qui guident notre action quotidienne et notre engagement envers nos clients
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-all duration-300 hover:scale-105 group">
-                <CardHeader>
-                  <div className="w-16 h-16 bg-gradient-to-r from-niger-orange to-niger-green rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                    <value.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <CardTitle className="text-xl group-hover:text-niger-orange transition-colors">
-                    {value.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">{value.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Team */}
-      <section className="py-16 px-4 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Notre Équipe
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Des experts passionnés qui mettent leur savoir-faire au service de votre réussite
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {team.map((member, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-all duration-300 hover:scale-105 group">
-                <CardHeader>
-                  <div className="text-6xl mb-4 group-hover:scale-110 transition-transform">{member.image}</div>
-                  <CardTitle className="text-xl group-hover:text-niger-orange transition-colors">
-                    {member.name}
-                  </CardTitle>
-                  <Badge variant="outline" className="border-niger-green text-niger-green mx-auto">
-                    {member.role}
-                  </Badge>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 text-sm">{member.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-niger-green to-niger-green-dark">
-        <div className="max-w-4xl mx-auto text-center text-white">
-          <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-4">
-            Prêt à transformer votre idée en entreprise ?
+        {/* Values */}
+        <div className="mb-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 text-gray-900 dark:text-white">
+            Nos Valeurs
           </h2>
-          <p className="text-xl mb-8 opacity-90">
-            Rejoignez les centaines d'entrepreneurs qui nous font confiance pour leur réussite
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/inscription-nif-rccm">
-              <Button size="lg" variant="secondary" className="bg-white text-niger-green hover:bg-gray-100 px-8 py-3">
-                Commencer maintenant
-              </Button>
-            </Link>
-            <Link to="/contact">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-niger-green px-8 py-3">
-                Nous contacter
-              </Button>
-            </Link>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {values.map((value, index) => (
+              <Card key={index} className="text-center hover:shadow-lg transition-shadow dark:bg-gray-800 dark:border-gray-700">
+                <CardHeader>
+                  <value.icon className="w-12 h-12 mx-auto mb-4 text-niger-orange" />
+                  <CardTitle className="text-lg dark:text-white">{value.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">{value.description}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
-      </section>
+
+        {/* Vision */}
+        <div className="mb-16">
+          <Card className="bg-gradient-to-r from-niger-orange/10 to-niger-green/10 border-niger-orange/20 dark:bg-gradient-to-r dark:from-niger-orange/20 dark:to-niger-green/20">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl md:text-3xl mb-4 dark:text-white">Notre Vision</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center">
+              <p className="text-lg text-gray-700 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                Devenir la plateforme de référence pour tous les entrepreneurs du Niger et de la diaspora, 
+                en offrant un écosystème complet de services digitaux qui transforme l'idée en entreprise prospère. 
+                Nous aspirons à contribuer significativement au développement économique du Niger.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Stats */}
+        <div className="grid md:grid-cols-4 gap-6 text-center">
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
+            <CardContent className="pt-6">
+              <div className="text-3xl font-bold text-niger-orange mb-2">500+</div>
+              <p className="text-gray-600 dark:text-gray-300">Entreprises créées</p>
+            </CardContent>
+          </Card>
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
+            <CardContent className="pt-6">
+              <div className="text-3xl font-bold text-niger-green mb-2">98%</div>
+              <p className="text-gray-600 dark:text-gray-300">Satisfaction client</p>
+            </CardContent>
+          </Card>
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
+            <CardContent className="pt-6">
+              <div className="text-3xl font-bold text-niger-orange mb-2">24h</div>
+              <p className="text-gray-600 dark:text-gray-300">Support disponible</p>
+            </CardContent>
+          </Card>
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
+            <CardContent className="pt-6">
+              <div className="text-3xl font-bold text-niger-green mb-2">3ans</div>
+              <p className="text-gray-600 dark:text-gray-300">D'expérience</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
       <Footer />
     </div>
