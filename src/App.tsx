@@ -8,6 +8,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Home from "./pages/Home";
+import Accueil from "./pages/Accueil";
 import Index from "./pages/Index";
 import Registration from "./pages/Registration";
 import CreateAccount from "./pages/CreateAccount";
@@ -51,7 +52,8 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/accueil" element={<Index />} />
+              <Route path="/accueil" element={<Accueil />} />
+              <Route path="/index" element={<Index />} />
               <Route path="/creer-compte" element={<CreateAccount />} />
               <Route path="/connexion" element={<Login />} />
               <Route path="/journal" element={<Journal />} />
