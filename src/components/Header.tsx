@@ -30,9 +30,6 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-4">
             <div className="flex items-center space-x-4">
-              <Link to="/accueil" className="text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
-                Accueil
-              </Link>
               <div className="relative group">
                 <a href="/#services" className="text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                   Services
@@ -57,17 +54,18 @@ const Header = () => {
               
               {isAuthenticated ? (
                 <>
-                  {user && (
-                    <div className="flex items-center space-x-3 border-l border-gray-200 pl-3 dark:border-gray-700">
-                      <span className="text-sm text-gray-600 font-medium dark:text-gray-400">
-                        {user?.firstName}
-                      </span>
-                      <Button onClick={logout} variant="ghost" size="sm" className="text-gray-600 hover:text-niger-orange dark:text-gray-400 dark:hover:text-niger-orange">
-                        <User className="w-4 h-4 mr-2" />
-                        Déconnexion
-                      </Button>
-                    </div>
-                  )}
+                  <Link to="/tableau-de-bord" className="text-gray-700 hover:text-niger-orange transition-colors font-medium px-3 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
+                    Tableau de bord
+                  </Link>
+                  <div className="flex items-center space-x-3 border-l border-gray-200 pl-3 dark:border-gray-700">
+                    <span className="text-sm text-gray-600 font-medium dark:text-gray-400">
+                      {user?.firstName}
+                    </span>
+                    <Button onClick={logout} variant="ghost" size="sm" className="text-gray-600 hover:text-niger-orange dark:text-gray-400 dark:hover:text-niger-orange">
+                      <User className="w-4 h-4 mr-2" />
+                      Déconnexion
+                    </Button>
+                  </div>
                 </>
               ) : (
                 <div className="flex items-center space-x-3">
@@ -109,9 +107,6 @@ const Header = () => {
         {isMenuOpen && (
           <div className="lg:hidden py-4 border-t border-gray-100 bg-white/95 backdrop-blur-md dark:bg-gray-900/95 dark:border-gray-800">
             <div className="flex flex-col space-y-3">
-              <Link to="/accueil" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
-                Accueil
-              </Link>
               <a href="/#services" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                 Services
               </a>
@@ -128,14 +123,14 @@ const Header = () => {
                 Offshore
               </Link>
               
-              {isAuthenticated && user && (
+              {isAuthenticated && (
                 <Link to="/tableau-de-bord" className="text-gray-700 hover:text-niger-orange transition-colors px-4 py-2 rounded-lg hover:bg-niger-orange/5 dark:text-gray-300 dark:hover:text-niger-orange">
                   Tableau de bord
                 </Link>
               )}
               
               <div className="flex flex-col space-y-2 pt-4 border-t border-gray-100 mt-4 dark:border-gray-800">
-                {isAuthenticated && user ? (
+                {isAuthenticated ? (
                   <>
                     <span className="text-sm text-gray-600 px-4 dark:text-gray-400">
                       Connecté en tant que {user?.firstName}

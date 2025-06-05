@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import AIAssistant from "@/components/AIAssistant";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +11,7 @@ const Footer = () => {
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Envoi d'email à youtube@nacdigitalpulse.com
+    // Simulation d'envoi d'email à youtube@nacdigitalpulse.com
     try {
       // Ici vous pourriez intégrer un service d'email
       console.log(`Envoi newsletter vers youtube@nacdigitalpulse.com pour: ${email}`);
@@ -82,7 +81,6 @@ const Footer = () => {
               <li><Link to="/charte-graphique" className="hover:text-white transition-colors">Charte graphique</Link></li>
               <li><Link to="/supports-marketing" className="hover:text-white transition-colors">Supports marketing</Link></li>
               <li><Link to="/pack-entrepreneur" className="hover:text-white transition-colors">Pack entrepreneur</Link></li>
-              <li><Link to="/email-professionnel" className="hover:text-white transition-colors">Email professionnel</Link></li>
             </ul>
           </div>
 
@@ -152,8 +150,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      
-      <AIAssistant />
     </footer>
   );
 };

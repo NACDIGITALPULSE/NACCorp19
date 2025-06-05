@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,7 +7,6 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Home from "./pages/Home";
-import Accueil from "./pages/Accueil";
 import Index from "./pages/Index";
 import Registration from "./pages/Registration";
 import CreateAccount from "./pages/CreateAccount";
@@ -33,12 +31,6 @@ import CentreAide from "./pages/CentreAide";
 import NotreEquipe from "./pages/NotreEquipe";
 import Documentation from "./pages/Documentation";
 import StatusSysteme from "./pages/StatusSysteme";
-import PolitiqueConfidentialite from "./pages/PolitiqueConfidentialite";
-import CGU from "./pages/CGU";
-import EmailProfessionnel from "./pages/EmailProfessionnel";
-import Carrieres from "./pages/Carrieres";
-import Presse from "./pages/Presse";
-import Partenaires from "./pages/Partenaires";
 
 const queryClient = new QueryClient();
 
@@ -52,8 +44,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/accueil" element={<Accueil />} />
-              <Route path="/index" element={<Index />} />
+              <Route path="/accueil" element={<Index />} />
               <Route path="/creer-compte" element={<CreateAccount />} />
               <Route path="/connexion" element={<Login />} />
               <Route path="/journal" element={<Journal />} />
@@ -67,20 +58,14 @@ const App = () => (
               <Route path="/charte-graphique" element={<CharteGraphique />} />
               <Route path="/supports-marketing" element={<SupportsMarketing />} />
               <Route path="/pack-entrepreneur" element={<PackEntrepreneur />} />
-              <Route path="/email-professionnel" element={<EmailProfessionnel />} />
               
               {/* Support */}
               <Route path="/centre-aide" element={<CentreAide />} />
               <Route path="/documentation" element={<Documentation />} />
               <Route path="/status-systeme" element={<StatusSysteme />} />
-              <Route path="/politique-confidentialite" element={<PolitiqueConfidentialite />} />
-              <Route path="/cgu" element={<CGU />} />
               
               {/* Entreprise */}
               <Route path="/notre-equipe" element={<NotreEquipe />} />
-              <Route path="/carrieres" element={<Carrieres />} />
-              <Route path="/presse" element={<Presse />} />
-              <Route path="/partenaires" element={<Partenaires />} />
               
               {/* Protected Routes */}
               <Route path="/tableau-de-bord" element={
