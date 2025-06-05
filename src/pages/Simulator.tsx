@@ -9,6 +9,15 @@ import { Calculator, TrendingUp, DollarSign, Bitcoin } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
+interface CalculationResults {
+  impotSocietes: number;
+  patente: number;
+  taxeProfessionnelle: number;
+  charges: number;
+  total: number;
+  netRevenue: number;
+}
+
 const Simulator = () => {
   const [revenue, setRevenue] = useState('');
   const [businessType, setBusinessType] = useState('');
@@ -36,21 +45,26 @@ const Simulator = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const calculateResults = () => {
+  const calculateResults = (): CalculationResults => {
     const annualRevenue = parseFloat(revenue) || 0;
     
     // Calculs simplifiés pour le Niger
-    const results = {
-      impotSocietes: annualRevenue * 0.25, // 25% pour les PME
-      patente: Math.min(annualRevenue * 0.002, 500000), // 0.2% plafonné à 500k
-      taxeProfessionnelle: annualRevenue * 0.015, // 1.5%
-      charges: parseFloat(employees) * 50000 * 12, // 50k par employé par mois
+    const impotSocietes = annualRevenue * 0.25; // 25% pour les PME
+    const patente = Math.min(annualRevenue * 0.002, 500000); // 0.2% plafonné à 500k
+    const taxeProfessionnelle = annualRevenue * 0.015; // 1.5%
+    const charges = parseFloat(employees) * 50000 * 12; // 50k par employé par mois
+
+    const total = impotSocietes + patente + taxeProfessionnelle + charges;
+    const netRevenue = annualRevenue - total;
+
+    return {
+      impotSocietes,
+      patente,
+      taxeProfessionnelle,
+      charges,
+      total,
+      netRevenue
     };
-
-    results.total = results.impotSocietes + results.patente + results.taxeProfessionnelle + results.charges;
-    results.netRevenue = annualRevenue - results.total;
-
-    return results;
   };
 
   const results = calculateResults();
