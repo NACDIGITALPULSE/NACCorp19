@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +22,7 @@ import Dashboard from "./pages/Dashboard";
 import TaxDeclaration from "./pages/TaxDeclaration";
 import Accounting from "./pages/Accounting";
 import Journal from "./pages/Journal";
+import ArticleDetail from "./pages/ArticleDetail";
 import Simulator from "./pages/Simulator";
 import AboutUs from "./pages/AboutUs";
 import Offshore from "./pages/Offshore";
@@ -31,6 +33,8 @@ import CentreAide from "./pages/CentreAide";
 import NotreEquipe from "./pages/NotreEquipe";
 import Documentation from "./pages/Documentation";
 import StatusSysteme from "./pages/StatusSysteme";
+import EmailProfessionnel from "./pages/EmailProfessionnel";
+import PolitiqueConfidentialite from "./pages/PolitiqueConfidentialite";
 
 const queryClient = new QueryClient();
 
@@ -48,11 +52,14 @@ const App = () => (
               <Route path="/creer-compte" element={<CreateAccount />} />
               <Route path="/connexion" element={<Login />} />
               <Route path="/journal" element={<Journal />} />
+              <Route path="/article/:id" element={<ArticleDetail />} />
               <Route path="/simulateur" element={<Simulator />} />
               <Route path="/tarifs" element={<Pricing />} />
               <Route path="/a-propos" element={<AboutUs />} />
               <Route path="/offshore" element={<Offshore />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/email-professionnel" element={<EmailProfessionnel />} />
+              <Route path="/politique-confidentialite" element={<PolitiqueConfidentialite />} />
               
               {/* Services */}
               <Route path="/charte-graphique" element={<CharteGraphique />} />

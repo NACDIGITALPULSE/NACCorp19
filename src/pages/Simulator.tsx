@@ -1,26 +1,41 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Calculator, FileText, Building, Palette, Globe, BarChart3 } from 'lucide-react';
+import { Calculator, FileText, Building, Palette, Globe, BarChart3, TrendingUp, DollarSign } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 const Simulator = () => {
-  const [simulationType, setSimulationType] = useState('tva');
+  const [simulationType, setSimulationType] = useState('service');
   const [amount, setAmount] = useState('');
+  const [fromCurrency, setFromCurrency] = useState('XOF');
+  const [toCurrency, setToCurrency] = useState('USD');
   const [serviceType, setServiceType] = useState('');
   const [results, setResults] = useState(null);
+  const [exchangeRates, setExchangeRates] = useState({});
 
-  // TVA rates in Niger
-  const tvaRates = {
-    standard: 19, // Taux normal
-    reduced: 0,   // Exonéré
-    services: 19  // Services
+  // Taux de change en temps réel (simulation - en production, utiliser une API comme CoinGecko ou ExchangeRate-API)
+  const currencies = {
+    'XOF': { name: 'Franc CFA', symbol: 'FCFA', rate: 1 },
+    'USD': { name: 'Dollar Américain', symbol: '$', rate: 0.0016 },
+    'EUR': { name: 'Euro', symbol: '€', rate: 0.0015 },
+    'GBP': { name: 'Livre Sterling', symbol: '£', rate: 0.0013 },
+    'BTC': { name: 'Bitcoin', symbol: '₿', rate: 0.000000037 },
+    'ETH': { name: 'Ethereum', symbol: 'Ξ', rate: 0.0000006 },
+    'BNB': { name: 'Binance Coin', symbol: 'BNB', rate: 0.0000027 },
+    'ADA': { name: 'Cardano', symbol: 'ADA', rate: 0.0021 },
+    'DOT': { name: 'Polkadot', symbol: 'DOT', rate: 0.00024 },
+    'NGN': { name: 'Naira Nigérian', symbol: '₦', rate: 1.31 },
+    'GHS': { name: 'Cedi Ghanéen', symbol: 'GH₵', rate: 0.019 },
+    'MAD': { name: 'Dirham Marocain', symbol: 'DH', rate: 0.016 },
+    'CAD': { name: 'Dollar Canadien', symbol: 'C$', rate: 0.0022 },
+    'CHF': { name: 'Franc Suisse', symbol: 'CHF', rate: 0.0015 },
+    'JPY': { name: 'Yen Japonais', symbol: '¥', rate: 0.24 }
   };
 
   // Service prices
@@ -31,23 +46,61 @@ const Simulator = () => {
     'website-ecommerce': { base: 300000, description: 'Site web e-commerce' },
     'declaration-fiscale': { base: 25000, description: 'Déclaration fiscale' },
     'comptabilite': { base: 50000, description: 'Suivi comptable mensuel' },
-    'visibilite': { base: 100000, description: 'Pack visibilité en ligne' }
+    'visibilite': { base: 100000, description: 'Pack visibilité en ligne' },
+    'email-professionnel': { base: 4500, description: 'Email professionnel (par mois)' },
+    'offshore': { base: 150000, description: 'Création entreprise offshore' },
+    'charte-graphique': { base: 125000, description: 'Charte graphique complète' }
   };
 
-  const calculateTVA = () => {
+  // Mise à jour des taux de change (simulation)
+  useEffect(() => {
+    const updateRates = () => {
+      const variation = () => (Math.random() - 0.5) * 0.02; // Variation de ±1%
+      
+      setExchangeRates(prev => {
+        const newRates = { ...currencies };
+        Object.keys(newRates).forEach(key => {
+          if (key !== 'XOF') {
+            newRates[key].rate = currencies[key].rate * (1 + variation());
+          }
+        });
+        return newRates;
+      });
+    };
+
+    updateRates();
+    const interval = setInterval(updateRates, 30000); // Mise à jour toutes les 30 secondes
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const convertCurrency = (amount: number, from: string, to: string) => {
+    const currentRates = Object.keys(exchangeRates).length > 0 ? exchangeRates : currencies;
+    
+    if (from === to) return amount;
+    
+    // Convertir vers XOF d'abord
+    const amountInXOF = from === 'XOF' ? amount : amount / currentRates[from].rate;
+    
+    // Puis convertir vers la devise cible
+    const convertedAmount = to === 'XOF' ? amountInXOF : amountInXOF * currentRates[to].rate;
+    
+    return convertedAmount;
+  };
+
+  const calculateCurrencyConversion = () => {
     const baseAmount = parseFloat(amount);
     if (!baseAmount || baseAmount <= 0) return;
 
-    const tvaRate = tvaRates.standard;
-    const tvaAmount = (baseAmount * tvaRate) / 100;
-    const totalAmount = baseAmount + tvaAmount;
-
+    const convertedAmount = convertCurrency(baseAmount, fromCurrency, toCurrency);
+    
     setResults({
-      type: 'tva',
-      baseAmount: baseAmount,
-      tvaRate: tvaRate,
-      tvaAmount: tvaAmount,
-      totalAmount: totalAmount
+      type: 'currency',
+      originalAmount: baseAmount,
+      convertedAmount: convertedAmount,
+      fromCurrency: fromCurrency,
+      toCurrency: toCurrency,
+      exchangeRate: currencies[toCurrency].rate / currencies[fromCurrency].rate
     });
   };
 
@@ -56,25 +109,30 @@ const Simulator = () => {
 
     const service = servicePrices[serviceType];
     const basePrice = service.base;
-    const tvaAmount = (basePrice * tvaRates.standard) / 100;
-    const totalPrice = basePrice + tvaAmount;
 
     setResults({
       type: 'service',
       service: service.description,
       basePrice: basePrice,
-      tvaRate: tvaRates.standard,
-      tvaAmount: tvaAmount,
-      totalPrice: totalPrice
+      priceUSD: convertCurrency(basePrice, 'XOF', 'USD'),
+      priceEUR: convertCurrency(basePrice, 'XOF', 'EUR')
     });
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'XOF',
-      minimumFractionDigits: 0
-    }).format(amount);
+  const formatCurrency = (amount: number, currencyCode: string) => {
+    const currency = currencies[currencyCode];
+    
+    if (currencyCode === 'BTC' || currencyCode === 'ETH') {
+      return `${amount.toFixed(8)} ${currency.symbol}`;
+    } else if (currencyCode === 'XOF') {
+      return new Intl.NumberFormat('fr-FR', {
+        style: 'currency',
+        currency: 'XOF',
+        minimumFractionDigits: 0
+      }).format(amount);
+    } else {
+      return `${amount.toFixed(2)} ${currency.symbol}`;
+    }
   };
 
   return (
@@ -86,10 +144,10 @@ const Simulator = () => {
         <div className="max-w-4xl mx-auto text-center text-white">
           <Calculator className="w-16 h-16 mx-auto mb-6" />
           <h1 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
-            Simulateur de Coûts & TVA
+            Simulateur de Coûts & Devises
           </h1>
           <p className="text-xl mb-8 opacity-90">
-            Calculez vos coûts de services et obligations TVA au Niger en temps réel
+            Calculez vos coûts de services et convertissez les devises du monde entier en temps réel
           </p>
         </div>
       </section>
@@ -104,18 +162,6 @@ const Simulator = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <Button
-                  variant={simulationType === 'tva' ? 'default' : 'outline'}
-                  className={`w-full justify-start ${
-                    simulationType === 'tva' 
-                      ? 'bg-purple-600 text-white' 
-                      : 'hover:bg-purple-50'
-                  }`}
-                  onClick={() => setSimulationType('tva')}
-                >
-                  <Calculator className="w-4 h-4 mr-2" />
-                  Calcul TVA
-                </Button>
-                <Button
                   variant={simulationType === 'service' ? 'default' : 'outline'}
                   className={`w-full justify-start ${
                     simulationType === 'service' 
@@ -127,26 +173,41 @@ const Simulator = () => {
                   <FileText className="w-4 h-4 mr-2" />
                   Devis Services
                 </Button>
+                <Button
+                  variant={simulationType === 'currency' ? 'default' : 'outline'}
+                  className={`w-full justify-start ${
+                    simulationType === 'currency' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'hover:bg-purple-50'
+                  }`}
+                  onClick={() => setSimulationType('currency')}
+                >
+                  <DollarSign className="w-4 h-4 mr-2" />
+                  Convertisseur Devises
+                </Button>
               </CardContent>
             </Card>
 
-            {/* Information Card */}
+            {/* Taux de change en temps réel */}
             <Card className="mt-6">
               <CardHeader>
-                <CardTitle className="text-sm">Informations TVA Niger</CardTitle>
+                <CardTitle className="text-sm flex items-center">
+                  <TrendingUp className="w-4 h-4 mr-2" />
+                  Taux en temps réel
+                </CardTitle>
               </CardHeader>
               <CardContent className="text-sm space-y-2">
                 <div className="flex justify-between">
-                  <span>Taux normal:</span>
-                  <span className="font-semibold">19%</span>
+                  <span>1 USD =</span>
+                  <span className="font-semibold">{formatCurrency(1 / currencies.USD.rate, 'XOF')}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Services:</span>
-                  <span className="font-semibold">19%</span>
+                  <span>1 EUR =</span>
+                  <span className="font-semibold">{formatCurrency(1 / currencies.EUR.rate, 'XOF')}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Exonérations:</span>
-                  <span className="font-semibold">0%</span>
+                  <span>1 BTC =</span>
+                  <span className="font-semibold">{formatCurrency(1 / currencies.BTC.rate, 'XOF')}</span>
                 </div>
               </CardContent>
             </Card>
@@ -157,44 +218,21 @@ const Simulator = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  {simulationType === 'tva' ? (
-                    <>
-                      <Calculator className="w-5 h-5 mr-2" />
-                      Calculateur TVA
-                    </>
-                  ) : (
+                  {simulationType === 'service' ? (
                     <>
                       <FileText className="w-5 h-5 mr-2" />
                       Simulateur de Devis
+                    </>
+                  ) : (
+                    <>
+                      <DollarSign className="w-5 h-5 mr-2" />
+                      Convertisseur de Devises
                     </>
                   )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {simulationType === 'tva' ? (
-                  // TVA Calculator
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="amount">Montant HT (FCFA)</Label>
-                      <Input
-                        id="amount"
-                        type="number"
-                        placeholder="Entrez le montant hors taxe"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                    <Button 
-                      onClick={calculateTVA}
-                      className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-                      disabled={!amount}
-                    >
-                      <Calculator className="w-4 h-4 mr-2" />
-                      Calculer la TVA
-                    </Button>
-                  </div>
-                ) : (
+                {simulationType === 'service' ? (
                   // Service Cost Calculator
                   <div className="space-y-4">
                     <div>
@@ -207,43 +245,49 @@ const Simulator = () => {
                           <SelectItem value="nif-rccm">
                             <div className="flex items-center">
                               <Building className="w-4 h-4 mr-2" />
-                              NIF & RCCM - {formatCurrency(servicePrices['nif-rccm'].base)}
+                              NIF & RCCM - {formatCurrency(servicePrices['nif-rccm'].base, 'XOF')}
                             </div>
                           </SelectItem>
                           <SelectItem value="logo">
                             <div className="flex items-center">
                               <Palette className="w-4 h-4 mr-2" />
-                              Logo professionnel - {formatCurrency(servicePrices.logo.base)}
+                              Logo professionnel - {formatCurrency(servicePrices.logo.base, 'XOF')}
                             </div>
                           </SelectItem>
                           <SelectItem value="website-vitrine">
                             <div className="flex items-center">
                               <Globe className="w-4 h-4 mr-2" />
-                              Site vitrine - {formatCurrency(servicePrices['website-vitrine'].base)}
+                              Site vitrine - {formatCurrency(servicePrices['website-vitrine'].base, 'XOF')}
                             </div>
                           </SelectItem>
                           <SelectItem value="website-ecommerce">
                             <div className="flex items-center">
                               <Globe className="w-4 h-4 mr-2" />
-                              Site e-commerce - {formatCurrency(servicePrices['website-ecommerce'].base)}
+                              Site e-commerce - {formatCurrency(servicePrices['website-ecommerce'].base, 'XOF')}
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="email-professionnel">
+                            <div className="flex items-center">
+                              <FileText className="w-4 h-4 mr-2" />
+                              Email professionnel - {formatCurrency(servicePrices['email-professionnel'].base, 'XOF')}
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="offshore">
+                            <div className="flex items-center">
+                              <Globe className="w-4 h-4 mr-2" />
+                              Services offshore - {formatCurrency(servicePrices.offshore.base, 'XOF')}
                             </div>
                           </SelectItem>
                           <SelectItem value="declaration-fiscale">
                             <div className="flex items-center">
                               <FileText className="w-4 h-4 mr-2" />
-                              Déclaration fiscale - {formatCurrency(servicePrices['declaration-fiscale'].base)}
+                              Déclaration fiscale - {formatCurrency(servicePrices['declaration-fiscale'].base, 'XOF')}
                             </div>
                           </SelectItem>
                           <SelectItem value="comptabilite">
                             <div className="flex items-center">
                               <BarChart3 className="w-4 h-4 mr-2" />
-                              Comptabilité - {formatCurrency(servicePrices.comptabilite.base)}
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="visibilite">
-                            <div className="flex items-center">
-                              <Globe className="w-4 h-4 mr-2" />
-                              Visibilité en ligne - {formatCurrency(servicePrices.visibilite.base)}
+                              Comptabilité - {formatCurrency(servicePrices.comptabilite.base, 'XOF')}
                             </div>
                           </SelectItem>
                         </SelectContent>
@@ -258,6 +302,64 @@ const Simulator = () => {
                       Calculer le devis
                     </Button>
                   </div>
+                ) : (
+                  // Currency Converter
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="amount">Montant à convertir</Label>
+                      <Input
+                        id="amount"
+                        type="number"
+                        placeholder="Entrez le montant"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        className="mt-1"
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="fromCurrency">De</Label>
+                        <Select value={fromCurrency} onValueChange={setFromCurrency}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.entries(currencies).map(([code, currency]) => (
+                              <SelectItem key={code} value={code}>
+                                {code} - {currency.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="toCurrency">Vers</Label>
+                        <Select value={toCurrency} onValueChange={setToCurrency}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.entries(currencies).map(([code, currency]) => (
+                              <SelectItem key={code} value={code}>
+                                {code} - {currency.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      onClick={calculateCurrencyConversion}
+                      className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                      disabled={!amount}
+                    >
+                      <DollarSign className="w-4 h-4 mr-2" />
+                      Convertir
+                    </Button>
+                  </div>
                 )}
 
                 {/* Results */}
@@ -267,40 +369,39 @@ const Simulator = () => {
                       Résultats du calcul
                     </h3>
                     
-                    {results.type === 'tva' ? (
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span>Montant HT:</span>
-                          <span className="font-semibold">{formatCurrency(results.baseAmount)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>TVA ({results.tvaRate}%):</span>
-                          <span className="font-semibold text-purple-600">{formatCurrency(results.tvaAmount)}</span>
-                        </div>
-                        <Separator />
-                        <div className="flex justify-between text-lg">
-                          <span className="font-semibold">Total TTC:</span>
-                          <span className="font-bold text-purple-800">{formatCurrency(results.totalAmount)}</span>
-                        </div>
-                      </div>
-                    ) : (
+                    {results.type === 'service' ? (
                       <div className="space-y-3">
                         <div className="flex justify-between">
                           <span>Service:</span>
                           <span className="font-semibold">{results.service}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Prix HT:</span>
-                          <span className="font-semibold">{formatCurrency(results.basePrice)}</span>
+                          <span>Prix en FCFA:</span>
+                          <span className="font-semibold">{formatCurrency(results.basePrice, 'XOF')}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>TVA ({results.tvaRate}%):</span>
-                          <span className="font-semibold text-purple-600">{formatCurrency(results.tvaAmount)}</span>
+                          <span>Prix en USD:</span>
+                          <span className="font-semibold text-green-600">{formatCurrency(results.priceUSD, 'USD')}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Prix en EUR:</span>
+                          <span className="font-semibold text-blue-600">{formatCurrency(results.priceEUR, 'EUR')}</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span>Montant original:</span>
+                          <span className="font-semibold">{formatCurrency(results.originalAmount, results.fromCurrency)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Taux de change:</span>
+                          <span className="font-semibold text-gray-600">1 {results.fromCurrency} = {results.exchangeRate.toFixed(6)} {results.toCurrency}</span>
                         </div>
                         <Separator />
                         <div className="flex justify-between text-lg">
-                          <span className="font-semibold">Prix total TTC:</span>
-                          <span className="font-bold text-purple-800">{formatCurrency(results.totalPrice)}</span>
+                          <span className="font-semibold">Montant converti:</span>
+                          <span className="font-bold text-purple-800">{formatCurrency(results.convertedAmount, results.toCurrency)}</span>
                         </div>
                       </div>
                     )}
@@ -318,24 +419,20 @@ const Simulator = () => {
               </CardContent>
             </Card>
 
-            {/* Service Packages */}
+            {/* Crypto prices */}
             <Card className="mt-6">
               <CardHeader>
-                <CardTitle>Nos Packs Recommandés</CardTitle>
+                <CardTitle>Cours des Cryptomonnaies (FCFA)</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="p-4 border rounded-lg hover:shadow-md transition-shadow">
-                    <h4 className="font-semibold text-niger-orange mb-2">Pack Entrepreneur</h4>
-                    <p className="text-sm text-gray-600 mb-3">NIF + RCCM + Logo</p>
-                    <div className="text-lg font-bold">{formatCurrency(125000 * 1.19)}</div>
-                    <div className="text-sm text-gray-500">TTC (TVA incluse)</div>
+                    <h4 className="font-semibold text-orange-600 mb-2">Bitcoin (BTC)</h4>
+                    <div className="text-lg font-bold">{formatCurrency(1 / currencies.BTC.rate, 'XOF')}</div>
                   </div>
                   <div className="p-4 border rounded-lg hover:shadow-md transition-shadow">
-                    <h4 className="font-semibold text-niger-green mb-2">Pack Digital</h4>
-                    <p className="text-sm text-gray-600 mb-3">Logo + Site vitrine + Visibilité</p>
-                    <div className="text-lg font-bold">{formatCurrency(325000 * 1.19)}</div>
-                    <div className="text-sm text-gray-500">TTC (TVA incluse)</div>
+                    <h4 className="font-semibold text-blue-600 mb-2">Ethereum (ETH)</h4>
+                    <div className="text-lg font-bold">{formatCurrency(1 / currencies.ETH.rate, 'XOF')}</div>
                   </div>
                 </div>
               </CardContent>

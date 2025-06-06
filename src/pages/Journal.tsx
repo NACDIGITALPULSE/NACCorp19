@@ -14,7 +14,7 @@ const Journal = () => {
     excerpt: "Le gouvernement nigérien a annoncé de nouvelles mesures fiscales qui impacteront directement les entrepreneurs. Découvrez les changements majeurs et comment vous y préparer.",
     image: "📊",
     category: "Fiscalité",
-    author: "Niger EntreprenderHub",
+    author: "NACCORP",
     date: "2024-03-15",
     readTime: "5 min",
     tags: ["Fiscalité", "Réforme", "Entrepreneur"]
@@ -45,14 +45,14 @@ const Journal = () => {
     },
     {
       id: 4,
-      title: "TVA au Niger : Calculs et obligations pour les entreprises",
-      excerpt: "Maîtrisez les calculs de TVA et respectez vos obligations fiscales. Guide pratique avec exemples concrets et simulateur inclus.",
-      image: "🧮",
-      category: "Comptabilité",
-      author: "Experts Comptables",
+      title: "Services offshore : Opportunités et avantages pour les entrepreneurs",
+      excerpt: "Découvrez comment les services offshore peuvent optimiser votre fiscalité et développer votre activité à l'international.",
+      image: "🌍",
+      category: "Offshore",
+      author: "Experts Offshore",
       date: "2024-03-08",
       readTime: "6 min",
-      tags: ["TVA", "Comptabilité", "Calcul"]
+      tags: ["Offshore", "International", "Fiscalité"]
     },
     {
       id: 5,
@@ -67,14 +67,14 @@ const Journal = () => {
     },
     {
       id: 6,
-      title: "Financement des PME : Nouvelles opportunités disponibles",
-      excerpt: "Découvrez les dernières options de financement pour les petites et moyennes entreprises au Niger, y compris les programmes gouvernementaux.",
-      image: "💰",
-      category: "Financement",
-      author: "Conseillers Financiers",
+      title: "Email professionnel : Pourquoi c'est essentiel pour votre entreprise",
+      excerpt: "L'importance d'avoir une adresse email professionnelle personnalisée et comment cela renforce votre crédibilité.",
+      image: "📧",
+      category: "Communication",
+      author: "Experts Communication",
       date: "2024-03-02",
       readTime: "5 min",
-      tags: ["Financement", "PME", "Opportunités"]
+      tags: ["Email", "Communication", "Professionnel"]
     }
   ];
 
@@ -84,7 +84,7 @@ const Journal = () => {
     { name: "Administratif", count: 4, active: false },
     { name: "Design", count: 3, active: false },
     { name: "Digital", count: 4, active: false },
-    { name: "Financement", count: 4, active: false }
+    { name: "Offshore", count: 4, active: false }
   ];
 
   return (
@@ -95,7 +95,7 @@ const Journal = () => {
       <section className="pt-24 pb-12 px-4 bg-gradient-to-r from-niger-orange to-niger-green">
         <div className="max-w-6xl mx-auto text-center text-white">
           <h1 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
-            Journal EntreprenderHub
+            Journal NACCORP
           </h1>
           <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
             Restez informé des dernières actualités entrepreneuriales, conseils pratiques et réformes qui impactent votre business au Niger
@@ -193,10 +193,12 @@ const Journal = () => {
                     </div>
                   </div>
                 </div>
-                <Button className="bg-niger-orange hover:bg-niger-orange-dark text-white">
-                  Lire l'article complet
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
+                <Link to={`/article/${featuredArticle.id}`}>
+                  <Button className="bg-niger-orange hover:bg-niger-orange-dark text-white">
+                    Lire l'article complet
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
 
@@ -230,10 +232,12 @@ const Journal = () => {
                         </Badge>
                       ))}
                     </div>
-                    <Button variant="outline" className="w-full border-niger-green text-niger-green hover:bg-niger-green hover:text-white group-hover:scale-105 transition-transform">
-                      Lire plus
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
+                    <Link to={`/article/${article.id}`}>
+                      <Button variant="outline" className="w-full border-niger-green text-niger-green hover:bg-niger-green hover:text-white group-hover:scale-105 transition-transform">
+                        Lire plus
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               ))}
