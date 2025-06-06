@@ -11,7 +11,7 @@ const ArticleDetail = () => {
 
   // Données d'exemple des articles (en production, cela viendrait d'une API)
   const articles = {
-    1: {
+    "1": {
       title: "Nouvelles réformes fiscales au Niger : Ce qui change pour les entrepreneurs en 2024",
       content: `
         <p>Le gouvernement nigérien a récemment annoncé une série de réformes fiscales majeures qui transformeront le paysage entrepreneurial du pays. Ces changements, entrés en vigueur le 1er janvier 2024, visent à simplifier les démarches administratives tout en modernisant le système fiscal.</p>
@@ -48,7 +48,7 @@ const ArticleDetail = () => {
       readTime: "5 min",
       tags: ["Fiscalité", "Réforme", "Entrepreneur"]
     },
-    2: {
+    "2": {
       title: "Guide complet pour créer son NIF en 2024 : Étapes et documents requis",
       content: `
         <p>La création du Numéro d'Identification Fiscale (NIF) est une étape cruciale pour tout entrepreneur au Niger. Ce guide détaillé vous explique la procédure complète, les documents nécessaires et les délais à respecter.</p>
@@ -114,7 +114,7 @@ const ArticleDetail = () => {
     }
   };
 
-  const article = articles[id as keyof typeof articles];
+  const article = id ? articles[id as keyof typeof articles] : undefined;
 
   if (!article) {
     return (
