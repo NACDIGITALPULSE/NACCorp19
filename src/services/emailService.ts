@@ -7,12 +7,13 @@ export interface EmailData {
   phone?: string;
   company?: string;
   message?: string;
-  type: 'contact' | 'registration' | 'appointment' | 'payment';
+  type: 'contact' | 'registration' | 'appointment' | 'payment' | 'nif-rccm' | 'visibility-request' | 'appointment-booking';
   appointmentDate?: string;
   appointmentTime?: string;
   service?: string;
   amount?: string;
   paymentMethod?: string;
+  html?: string;
 }
 
 export const sendEmail = async (emailData: EmailData): Promise<boolean> => {
@@ -44,7 +45,7 @@ export const sendPaymentNotification = async (paymentData: {
   paymentMethod: string;
 }): Promise<boolean> => {
   try {
-    console.log('Notification de paiement envoyée au NITA:', paymentData);
+    console.log('Notification de paiement envoyée au NITA (+227 880282987):', paymentData);
     
     // Ici, vous pourriez intégrer un service d'envoi SMS vers +227 880282987
     // Pour le moment, on simule l'envoi

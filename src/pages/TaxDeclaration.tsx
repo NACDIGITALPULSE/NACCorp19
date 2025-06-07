@@ -1,266 +1,183 @@
-
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calculator, FileText, CheckCircle } from 'lucide-react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { sendEmail } from '@/services/emailService';
-import { useToast } from '@/hooks/use-toast';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuth } from '@/hooks/useAuth';
+import { sendEmail, sendConfirmationEmail } from '@/services/emailService';
+import { toast } from 'sonner';
 
 const TaxDeclaration = () => {
-  const { toast } = useToast();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     companyName: '',
-    nif: '',
-    rccm: '',
-    contactPerson: '',
-    email: '',
-    phone: '',
-    businessType: '',
-    annualRevenue: '',
     declarationType: '',
+    period: '',
+    revenue: '',
+    employees: '',
     additionalInfo: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setIsLoading(true);
+
+    const emailData = {
+      to: "naccorp@nacdigitalpulse.com",
+      subject: "Demande de déclaration fiscale",
+      firstName: user?.user_metadata?.first_name || '',
+      lastName: user?.user_metadata?.last_name || '',
+      message: `Demande de déclaration fiscale pour ${formData.companyName}`,
+      type: 'contact' as const,
+      company: formData.companyName,
+      html: `
+        <h2>Nouvelle demande de déclaration fiscale</h2>
+        <p><strong>Utilisateur:</strong> ${user?.user_metadata?.first_name || ''} ${user?.user_metadata?.last_name || ''}</p>
+        <p><strong>Email:</strong> ${user?.email}</p>
+        <p><strong>Nom de l'entreprise:</strong> ${formData.companyName}</p>
+        <p><strong>Type de déclaration:</strong> ${formData.declarationType}</p>
+        <p><strong>Période:</strong> ${formData.period}</p>
+        <p><strong>Chiffre d'affaires:</strong> ${formData.revenue}</p>
+        <p><strong>Nombre d'employés:</strong> ${formData.employees}</p>
+        <p><strong>Informations supplémentaires:</strong> ${formData.additionalInfo}</p>
+      `
+    };
+
     try {
-      await sendEmail({
-        to: 'customer@nacdigitalpulse.com',
-        subject: 'Nouvelle demande - Déclaration fiscale',
-        html: `
-          <h2>Nouvelle demande de déclaration fiscale</h2>
-          <p><strong>Entreprise:</strong> ${formData.companyName}</p>
-          <p><strong>NIF:</strong> ${formData.nif}</p>
-          <p><strong>RCCM:</strong> ${formData.rccm}</p>
-          <p><strong>Contact:</strong> ${formData.contactPerson}</p>
-          <p><strong>Email:</strong> ${formData.email}</p>
-          <p><strong>Téléphone:</strong> ${formData.phone}</p>
-          <p><strong>Type d'activité:</strong> ${formData.businessType}</p>
-          <p><strong>Chiffre d'affaires annuel:</strong> ${formData.annualRevenue}</p>
-          <p><strong>Type de déclaration:</strong> ${formData.declarationType}</p>
-          <p><strong>Informations supplémentaires:</strong> ${formData.additionalInfo}</p>
-        `
-      });
+      const success = await sendEmail(emailData);
 
-      // Email de confirmation au client
-      await sendEmail({
-        to: formData.email,
-        subject: 'Confirmation - Demande de déclaration fiscale reçue',
-        html: `
-          <h2>Demande reçue avec succès</h2>
-          <p>Bonjour ${formData.contactPerson},</p>
-          <p>Nous avons bien reçu votre demande de déclaration fiscale. Notre équipe va l'examiner et vous recontacter sous 24h.</p>
-          <p>Cordialement,<br>L'équipe Niger EntreprenderHub</p>
-        `
-      });
+      if (success) {
+        toast.success("Votre demande a été envoyée avec succès !");
 
-      toast({
-        title: "Demande envoyée",
-        description: "Votre demande a été envoyée avec succès. Nous vous recontacterons sous 24h.",
-      });
+        const confirmationEmailData = {
+          to: user?.email || '',
+          subject: "Confirmation de votre demande de déclaration fiscale",
+          firstName: user?.user_metadata?.first_name || '',
+          lastName: user?.user_metadata?.last_name || '',
+          message: "Votre demande a été reçue et sera traitée dans les plus brefs délais.",
+          type: 'registration' as const,
+          html: `
+            <h2>Confirmation de demande</h2>
+            <p>Bonjour ${user?.user_metadata?.first_name || ''},</p>
+            <p>Nous avons bien reçu votre demande de déclaration fiscale pour <strong>${formData.companyName}</strong>.</p>
+            <p>Notre équipe va examiner votre dossier et vous contacter sous 24-48h.</p>
+            <p>Cordialement,<br>L'équipe NACCORP</p>
+          `
+        };
 
-      // Reset form
-      setFormData({
-        companyName: '',
-        nif: '',
-        rccm: '',
-        contactPerson: '',
-        email: '',
-        phone: '',
-        businessType: '',
-        annualRevenue: '',
-        declarationType: '',
-        additionalInfo: ''
-      });
-
+        await sendConfirmationEmail(confirmationEmailData);
+        setFormData({
+          companyName: '',
+          declarationType: '',
+          period: '',
+          revenue: '',
+          employees: '',
+          additionalInfo: ''
+        });
+      } else {
+        toast.error("Erreur lors de l'envoi de votre demande. Veuillez réessayer.");
+      }
     } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Une erreur est survenue. Veuillez réessayer.",
-        variant: "destructive",
-      });
+      console.error("Erreur lors de l'envoi de l'e-mail :", error);
+      toast.error("Une erreur s'est produite. Veuillez réessayer plus tard.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      
-      <div className="pt-24 pb-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="font-playfair text-4xl font-bold text-gray-900 mb-4">
-              Service de Déclaration Fiscale
-            </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Confiez-nous vos déclarations fiscales et restez en conformité avec la législation nigérienne
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            <Card className="text-center">
-              <CardHeader>
-                <Calculator className="w-12 h-12 text-niger-orange mx-auto mb-4" />
-                <CardTitle>Déclaration TVA</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">Déclaration mensuelle ou trimestrielle de TVA</p>
-                <p className="text-2xl font-bold text-niger-orange">25 000 FCFA/mois</p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <FileText className="w-12 h-12 text-niger-green mx-auto mb-4" />
-                <CardTitle>Impôt sur les Sociétés</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">Déclaration annuelle d'impôt sur les sociétés</p>
-                <p className="text-2xl font-bold text-niger-green">75 000 FCFA/an</p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <CheckCircle className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-                <CardTitle>Package Complet</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">Toutes déclarations fiscales incluses</p>
-                <p className="text-2xl font-bold text-blue-500">250 000 FCFA/an</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card className="max-w-2xl mx-auto">
-            <CardHeader>
-              <CardTitle>Demande de Service</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="companyName">Nom de l'entreprise *</Label>
-                    <Input
-                      id="companyName"
-                      value={formData.companyName}
-                      onChange={(e) => setFormData({...formData, companyName: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="nif">NIF</Label>
-                    <Input
-                      id="nif"
-                      value={formData.nif}
-                      onChange={(e) => setFormData({...formData, nif: e.target.value})}
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="rccm">RCCM</Label>
-                    <Input
-                      id="rccm"
-                      value={formData.rccm}
-                      onChange={(e) => setFormData({...formData, rccm: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="contactPerson">Personne de contact *</Label>
-                    <Input
-                      id="contactPerson"
-                      value={formData.contactPerson}
-                      onChange={(e) => setFormData({...formData, contactPerson: e.target.value})}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="email">Email *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone">Téléphone *</Label>
-                    <Input
-                      id="phone"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="businessType">Type d'activité *</Label>
-                  <Input
-                    id="businessType"
-                    value={formData.businessType}
-                    onChange={(e) => setFormData({...formData, businessType: e.target.value})}
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="annualRevenue">Chiffre d'affaires annuel estimé</Label>
-                    <Input
-                      id="annualRevenue"
-                      value={formData.annualRevenue}
-                      onChange={(e) => setFormData({...formData, annualRevenue: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="declarationType">Type de déclaration souhaité</Label>
-                    <Select onValueChange={(value) => setFormData({...formData, declarationType: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionnez" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="tva">Déclaration TVA</SelectItem>
-                        <SelectItem value="is">Impôt sur les Sociétés</SelectItem>
-                        <SelectItem value="complete">Package Complet</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="additionalInfo">Informations supplémentaires</Label>
-                  <Textarea
-                    id="additionalInfo"
-                    value={formData.additionalInfo}
-                    onChange={(e) => setFormData({...formData, additionalInfo: e.target.value})}
-                    placeholder="Décrivez vos besoins spécifiques..."
-                  />
-                </div>
-
-                <Button type="submit" className="w-full bg-niger-orange hover:bg-niger-orange-dark text-white">
-                  Envoyer ma demande
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
+    <div className="min-h-screen bg-gray-100 py-6">
+      <div className="max-w-3xl mx-auto bg-white shadow-md rounded-md overflow-hidden">
+        <Card>
+          <CardHeader className="bg-gray-50 px-6 py-4">
+            <CardTitle className="text-lg font-semibold">Déclaration Fiscale</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="companyName" className="block text-sm font-medium text-gray-700">Nom de l'entreprise</Label>
+                <Input
+                  type="text"
+                  id="companyName"
+                  name="companyName"
+                  value={formData.companyName}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="declarationType" className="block text-sm font-medium text-gray-700">Type de déclaration</Label>
+                <Input
+                  type="text"
+                  id="declarationType"
+                  name="declarationType"
+                  value={formData.declarationType}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="period" className="block text-sm font-medium text-gray-700">Période</Label>
+                <Input
+                  type="text"
+                  id="period"
+                  name="period"
+                  value={formData.period}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="revenue" className="block text-sm font-medium text-gray-700">Chiffre d'affaires</Label>
+                <Input
+                  type="number"
+                  id="revenue"
+                  name="revenue"
+                  value={formData.revenue}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="employees" className="block text-sm font-medium text-gray-700">Nombre d'employés</Label>
+                <Input
+                  type="number"
+                  id="employees"
+                  name="employees"
+                  value={formData.employees}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-700">Informations supplémentaires</Label>
+                <textarea
+                  id="additionalInfo"
+                  name="additionalInfo"
+                  value={formData.additionalInfo}
+                  onChange={handleChange}
+                  rows={3}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+              </div>
+              <Button type="submit" disabled={isLoading} className="w-full bg-niger-orange text-white">
+                {isLoading ? 'Envoi en cours...' : 'Envoyer la demande'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       </div>
-
-      <Footer />
     </div>
   );
 };

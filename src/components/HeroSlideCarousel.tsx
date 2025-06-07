@@ -1,183 +1,225 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, ChevronLeft, ChevronRight, Building, Globe, Palette, MessageSquare } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
 
-import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import ThreeDIllustration from './ThreeDIllustration';
+// Dummy 3D Illustration Component (Replace with your actual component)
+const ThreeDIllustration = () => (
+  <div className="w-full h-full bg-gray-200 rounded-full flex items-center justify-center">
+    <span className="text-gray-500">3D Illustration</span>
+  </div>
+);
 
-const slides = [
+interface Slide {
+  badge: string;
+  title: string;
+  description: string;
+  primaryAction: {
+    text: string;
+    link: string;
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  };
+  secondaryAction: {
+    text: string;
+    link: string;
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  };
+}
+
+const slidesData: Slide[] = [
   {
-    id: 1,
-    title: "Créez votre entreprise au Niger",
-    subtitle: "En quelques clics",
-    description: "Obtenez votre NIF et RCCM rapidement avec notre plateforme digitale sécurisée.",
-    cta: "Commencer maintenant",
-    link: "/inscription-nif-rccm",
-    gradient: "from-niger-orange via-red-500 to-pink-600",
-    illustration: "business"
+    badge: "NIF & RCCM",
+    title: "Lancez votre entreprise en toute simplicité",
+    description: "Obtenez votre Numéro d'Identification Fiscale et votre Registre de Commerce rapidement et facilement.",
+    primaryAction: {
+      text: "Créer mon NIF & RCCM",
+      link: "/inscription-nif-rccm",
+      icon: Building,
+    },
+    secondaryAction: {
+      text: "En savoir plus",
+      link: "/inscription-nif-rccm",
+      icon: ArrowRight,
+    },
   },
   {
-    id: 2,
-    title: "Développez votre présence digitale",
-    subtitle: "Sites web & Marketing",
-    description: "Des solutions complètes pour votre visibilité en ligne et votre croissance business.",
-    cta: "Découvrir nos services",
-    link: "/website-service",
-    gradient: "from-niger-green via-teal-500 to-blue-600",
-    illustration: "website"
+    badge: "Site Web",
+    title: "Développez votre présence en ligne",
+    description: "Créez un site web professionnel et responsive pour attirer de nouveaux clients.",
+    primaryAction: {
+      text: "Créer mon site web",
+      link: "/website-service",
+      icon: Globe,
+    },
+    secondaryAction: {
+      text: "Voir nos offres",
+      link: "/website-service",
+      icon: ArrowRight,
+    },
   },
   {
-    id: 3,
-    title: "Gestion comptable simplifiée",
-    subtitle: "Conformité & Fiscalité",
-    description: "Laissez nos experts gérer votre comptabilité et vos obligations fiscales.",
-    cta: "En savoir plus",
-    link: "/comptabilite",
-    gradient: "from-blue-600 via-indigo-600 to-purple-700",
-    illustration: "finance"
-  }
+    badge: "Identité Visuelle",
+    title: "Créez un logo unique pour votre marque",
+    description: "Concevez un logo professionnel qui reflète l'identité de votre entreprise.",
+    primaryAction: {
+      text: "Concevoir mon logo",
+      link: "/logo-service",
+      icon: Palette,
+    },
+    secondaryAction: {
+      text: "Découvrir nos designs",
+      link: "/logo-service",
+      icon: ArrowRight,
+    },
+  },
+  {
+    badge: "Visibilité en ligne",
+    title: "Boostez votre présence sur les réseaux sociaux",
+    description: "Développez votre communauté et attirez de nouveaux prospects grâce à nos stratégies de marketing digital.",
+    primaryAction: {
+      text: "Développer ma visibilité",
+      link: "/visibilite-en-ligne",
+      icon: MessageSquare,
+    },
+    secondaryAction: {
+      text: "Nos solutions",
+      link: "/visibilite-en-ligne",
+      icon: ArrowRight,
+    },
+  },
 ];
 
 const HeroSlideCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const slides = slidesData;
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
-
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    const intervalId = setInterval(() => {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
     }, 5000);
 
-    return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+    return () => clearInterval(intervalId);
+  }, [slides.length]);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-    setIsAutoPlaying(false);
+    setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
   };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-    setIsAutoPlaying(false);
-  };
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-    setIsAutoPlaying(false);
+  const previousSlide = () => {
+    setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
   };
 
   return (
-    <div className="relative w-full h-[600px] md:h-[700px] lg:h-[800px] overflow-hidden">
-      {slides.map((slide, index) => (
-        <div
-          key={slide.id}
-          className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
-            index === currentSlide 
-              ? 'opacity-100 translate-x-0' 
-              : index < currentSlide 
-                ? 'opacity-0 -translate-x-full' 
-                : 'opacity-0 translate-x-full'
-          }`}
+    <div className="relative h-[500px] md:h-[600px] lg:h-[700px] overflow-hidden bg-gradient-to-br from-niger-orange via-red-500 to-pink-600">
+      <div className="absolute inset-0 bg-black/20"></div>
+      
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentSlide}
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -100 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="absolute inset-0 flex items-center justify-center"
         >
-          <div className={`w-full h-full bg-gradient-to-br ${slide.gradient} relative overflow-hidden`}>
-            {/* Éléments décoratifs animés */}
-            <div className="absolute top-20 right-20 w-32 h-32 bg-white/10 rounded-full animate-pulse"></div>
-            <div className="absolute bottom-20 left-20 w-24 h-24 bg-white/5 rounded-full animate-bounce"></div>
-            <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-white/10 rounded-full animate-ping"></div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-full">
+            <div className="flex-1 text-white">
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="mb-6"
+              >
+                <span className="inline-block px-4 py-2 bg-white/20 text-white rounded-full text-sm font-medium backdrop-blur-sm border border-white/30">
+                  {slides[currentSlide].badge}
+                </span>
+              </motion.div>
+              
+              <motion.h1
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
+              >
+                {slides[currentSlide].title}
+              </motion.h1>
+              
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="text-lg md:text-xl mb-8 opacity-90 max-w-2xl"
+              >
+                {slides[currentSlide].description}
+              </motion.p>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+                className="flex flex-col sm:flex-row gap-4"
+              >
+                <Link to={slides[currentSlide].primaryAction.link}>
+                  <Button size="lg" className="bg-white text-niger-orange hover:bg-gray-100 shadow-lg group transition-all duration-300 hover:scale-105 w-full sm:w-auto">
+                    <slides[currentSlide].primaryAction.icon className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
+                    {slides[currentSlide].primaryAction.text}
+                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <Link to={slides[currentSlide].secondaryAction.link}>
+                  <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-niger-orange shadow-lg group transition-all duration-300 hover:scale-105 w-full sm:w-auto">
+                    <slides[currentSlide].secondaryAction.icon className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
+                    {slides[currentSlide].secondaryAction.text}
+                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+              </motion.div>
+            </div>
             
-            <div className="relative z-10 h-full flex items-center">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                  {/* Contenu textuel */}
-                  <div className="text-white space-y-6 order-2 lg:order-1">
-                    <div className="space-y-4">
-                      <p className="text-lg md:text-xl font-medium opacity-90 animate-fade-in">
-                        {slide.subtitle}
-                      </p>
-                      <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight animate-slide-up">
-                        {slide.title}
-                      </h1>
-                      <p className="text-lg md:text-xl opacity-90 max-w-lg animate-fade-in-delay">
-                        {slide.description}
-                      </p>
-                    </div>
-                    
-                    <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-delay-2">
-                      <Button 
-                        size="lg" 
-                        className="bg-white text-gray-900 hover:bg-gray-100 shadow-lg group transition-all duration-300 hover:scale-105"
-                        asChild
-                      >
-                        <a href={slide.link}>
-                          {slide.cta}
-                          <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                        </a>
-                      </Button>
-                      <Button 
-                        size="lg" 
-                        variant="outline" 
-                        className="border-2 border-white text-white hover:bg-white hover:text-gray-900 shadow-lg transition-all duration-300 hover:scale-105"
-                        asChild
-                      >
-                        <a href="/contact">
-                          Nous contacter
-                        </a>
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  {/* Illustration 3D */}
-                  <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
-                    <div className="w-full max-w-lg">
-                      <ThreeDIllustration type={slide.illustration as any} />
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="hidden lg:flex flex-1 justify-center items-center">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, rotateY: -30 }}
+                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                transition={{ delay: 0.7, duration: 0.8 }}
+                className="w-96 h-96"
+              >
+                <ThreeDIllustration />
+              </motion.div>
             </div>
           </div>
-        </div>
-      ))}
+        </motion.div>
+      </AnimatePresence>
 
-      {/* Contrôles de navigation */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-300 backdrop-blur-sm group"
-      >
-        <ChevronLeft className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
-      </button>
-      
-      <button
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-300 backdrop-blur-sm group"
-      >
-        <ChevronRight className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
-      </button>
-
-      {/* Indicateurs */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3">
+      {/* Navigation dots */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
         {slides.map((_, index) => (
           <button
             key={index}
-            onClick={() => goToSlide(index)}
+            onClick={() => setCurrentSlide(index)}
             className={`w-3 h-3 rounded-full transition-all duration-300 ${
               index === currentSlide 
                 ? 'bg-white scale-125' 
-                : 'bg-white/50 hover:bg-white/70'
+                : 'bg-white/50 hover:bg-white/75'
             }`}
           />
         ))}
       </div>
 
-      {/* Barre de progression */}
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20">
-        <div 
-          className="h-full bg-white transition-all duration-300 ease-linear"
-          style={{ 
-            width: `${((currentSlide + 1) / slides.length) * 100}%` 
-          }}
-        />
-      </div>
+      {/* Navigation arrows */}
+      <button
+        onClick={previousSlide}
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-all duration-300 backdrop-blur-sm border border-white/30"
+      >
+        <ChevronLeft className="w-6 h-6" />
+      </button>
+      
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-all duration-300 backdrop-blur-sm border border-white/30"
+      >
+        <ChevronRight className="w-6 h-6" />
+      </button>
     </div>
   );
 };

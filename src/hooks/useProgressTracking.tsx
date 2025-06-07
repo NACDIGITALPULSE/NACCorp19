@@ -41,7 +41,21 @@ export const useProgressTracking = (userId?: string) => {
         return;
       }
 
-      setProcedures(data || []);
+      // Transform the data to match our interface
+      const transformedData: ProcedureStatus[] = (data || []).map(item => ({
+        id: item.id,
+        procedure_type: item.procedure_type as ProcedureStatus['procedure_type'],
+        title: item.title,
+        status: item.status as ProcedureStatus['status'],
+        progress: item.progress,
+        current_step: item.current_step,
+        total_steps: item.total_steps,
+        data: item.data,
+        created_at: item.created_at,
+        updated_at: item.updated_at
+      }));
+
+      setProcedures(transformedData);
     } catch (error) {
       console.error('Error fetching user procedures:', error);
     } finally {
@@ -55,7 +69,13 @@ export const useProgressTracking = (userId?: string) => {
         .from('user_procedures')
         .insert({
           user_id: userId,
-          ...procedureData
+          procedure_type: procedureData.procedure_type,
+          title: procedureData.title,
+          status: procedureData.status || 'pending',
+          progress: procedureData.progress || 0,
+          current_step: procedureData.current_step || 1,
+          total_steps: procedureData.total_steps || 5,
+          data: procedureData.data
         })
         .select()
         .single();
@@ -65,8 +85,21 @@ export const useProgressTracking = (userId?: string) => {
         return null;
       }
 
-      setProcedures(prev => [data, ...prev]);
-      return data;
+      const transformedData: ProcedureStatus = {
+        id: data.id,
+        procedure_type: data.procedure_type as ProcedureStatus['procedure_type'],
+        title: data.title,
+        status: data.status as ProcedureStatus['status'],
+        progress: data.progress,
+        current_step: data.current_step,
+        total_steps: data.total_steps,
+        data: data.data,
+        created_at: data.created_at,
+        updated_at: data.updated_at
+      };
+
+      setProcedures(prev => [transformedData, ...prev]);
+      return transformedData;
     } catch (error) {
       console.error('Error creating procedure:', error);
       return null;
@@ -78,7 +111,13 @@ export const useProgressTracking = (userId?: string) => {
       const { data, error } = await supabase
         .from('user_procedures')
         .update({
-          ...updates,
+          procedure_type: updates.procedure_type,
+          title: updates.title,
+          status: updates.status,
+          progress: updates.progress,
+          current_step: updates.current_step,
+          total_steps: updates.total_steps,
+          data: updates.data,
           updated_at: new Date().toISOString()
         })
         .eq('id', procedureId)
@@ -90,10 +129,23 @@ export const useProgressTracking = (userId?: string) => {
         return null;
       }
 
+      const transformedData: ProcedureStatus = {
+        id: data.id,
+        procedure_type: data.procedure_type as ProcedureStatus['procedure_type'],
+        title: data.title,
+        status: data.status as ProcedureStatus['status'],
+        progress: data.progress,
+        current_step: data.current_step,
+        total_steps: data.total_steps,
+        data: data.data,
+        created_at: data.created_at,
+        updated_at: data.updated_at
+      };
+
       setProcedures(prev => 
-        prev.map(proc => proc.id === procedureId ? data : proc)
+        prev.map(proc => proc.id === procedureId ? transformedData : proc)
       );
-      return data;
+      return transformedData;
     } catch (error) {
       console.error('Error updating procedure:', error);
       return null;

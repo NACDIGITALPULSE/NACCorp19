@@ -1,285 +1,197 @@
-
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { BarChart3, Users, TrendingUp } from 'lucide-react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { sendEmail } from '@/services/emailService';
-import { useToast } from '@/hooks/use-toast';
+import { Textarea } from '@/components/ui/textarea';
+import { useAuth } from '@/hooks/useAuth';
+import { sendEmail, sendConfirmationEmail } from '@/services/emailService';
+import { toast } from "@/components/ui/use-toast"
 
 const Accounting = () => {
-  const { toast } = useToast();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     companyName: '',
-    nif: '',
-    rccm: '',
-    contactPerson: '',
-    email: '',
-    phone: '',
-    businessType: '',
+    companyType: '',
+    services: '',
     employees: '',
-    serviceType: '',
-    accountingNeeds: '',
+    annualRevenue: '',
     additionalInfo: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData({ ...formData, [name]: value });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setIsLoading(true);
+
+    const emailData = {
+      to: "naccorp@nacdigitalpulse.com",
+      subject: "Demande de service comptable",
+      firstName: user?.user_metadata?.first_name || '',
+      lastName: user?.user_metadata?.last_name || '',
+      message: `Demande de service comptable pour ${formData.companyName}`,
+      type: 'contact' as const,
+      company: formData.companyName,
+      html: `
+        <h2>Nouvelle demande de service comptable</h2>
+        <p><strong>Utilisateur:</strong> ${user?.user_metadata?.first_name || ''} ${user?.user_metadata?.last_name || ''}</p>
+        <p><strong>Email:</strong> ${user?.email}</p>
+        <p><strong>Nom de l'entreprise:</strong> ${formData.companyName}</p>
+        <p><strong>Type d'entreprise:</strong> ${formData.companyType}</p>
+        <p><strong>Services demandés:</strong> ${formData.services}</p>
+        <p><strong>Nombre d'employés:</strong> ${formData.employees}</p>
+        <p><strong>Chiffre d'affaires annuel:</strong> ${formData.annualRevenue}</p>
+        <p><strong>Informations supplémentaires:</strong> ${formData.additionalInfo}</p>
+      `
+    };
+
     try {
-      await sendEmail({
-        to: 'customer@nacdigitalpulse.com',
-        subject: 'Nouvelle demande - Suivi comptable',
+      const success = await sendEmail(emailData);
+
+      if (success) {
+        toast({
+          title: "Demande envoyée!",
+          description: "Votre demande a été envoyée avec succès. Nous vous contacterons bientôt.",
+        })
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erreur!",
+          description: "Il y a eu une erreur lors de l'envoi de votre demande. Veuillez réessayer.",
+        })
+      }
+
+      const confirmationEmailData = {
+        to: user?.email || '',
+        subject: "Confirmation de votre demande de service comptable",
+        firstName: user?.user_metadata?.first_name || '',
+        lastName: user?.user_metadata?.last_name || '',
+        message: "Votre demande a été reçue et sera traitée dans les plus brefs délais.",
+        type: 'registration' as const,
         html: `
-          <h2>Nouvelle demande de suivi comptable</h2>
-          <p><strong>Entreprise:</strong> ${formData.companyName}</p>
-          <p><strong>NIF:</strong> ${formData.nif}</p>
-          <p><strong>RCCM:</strong> ${formData.rccm}</p>
-          <p><strong>Contact:</strong> ${formData.contactPerson}</p>
-          <p><strong>Email:</strong> ${formData.email}</p>
-          <p><strong>Téléphone:</strong> ${formData.phone}</p>
-          <p><strong>Type d'activité:</strong> ${formData.businessType}</p>
-          <p><strong>Nombre d'employés:</strong> ${formData.employees}</p>
-          <p><strong>Type de service:</strong> ${formData.serviceType}</p>
-          <p><strong>Besoins comptables:</strong> ${formData.accountingNeeds}</p>
-          <p><strong>Informations supplémentaires:</strong> ${formData.additionalInfo}</p>
-        `
-      });
+        <h2>Confirmation de demande</h2>
+        <p>Bonjour ${user?.user_metadata?.first_name || ''},</p>
+        <p>Nous avons bien reçu votre demande de service comptable pour <strong>${formData.companyName}</strong>.</p>
+        <p>Notre équipe va examiner votre dossier et vous contacter sous 24-48h.</p>
+        <p>Cordialement,<br>L'équipe NACCORP</p>
+      `
+      };
 
-      // Email de confirmation au client
-      await sendEmail({
-        to: formData.email,
-        subject: 'Confirmation - Demande de suivi comptable reçue',
-        html: `
-          <h2>Demande reçue avec succès</h2>
-          <p>Bonjour ${formData.contactPerson},</p>
-          <p>Nous avons bien reçu votre demande de suivi comptable. Notre équipe va l'examiner et vous recontacter sous 24h.</p>
-          <p>Cordialement,<br>L'équipe Niger EntreprenderHub</p>
-        `
-      });
+      await sendConfirmationEmail(confirmationEmailData);
 
-      toast({
-        title: "Demande envoyée",
-        description: "Votre demande a été envoyée avec succès. Nous vous recontacterons sous 24h.",
-      });
-
-      // Reset form
       setFormData({
         companyName: '',
-        nif: '',
-        rccm: '',
-        contactPerson: '',
-        email: '',
-        phone: '',
-        businessType: '',
+        companyType: '',
+        services: '',
         employees: '',
-        serviceType: '',
-        accountingNeeds: '',
+        annualRevenue: '',
         additionalInfo: ''
       });
-
     } catch (error) {
+      console.error("Erreur lors de l'envoi de l'e-mail :", error);
       toast({
-        title: "Erreur",
-        description: "Une erreur est survenue. Veuillez réessayer.",
         variant: "destructive",
-      });
+        title: "Erreur!",
+        description: "Il y a eu une erreur lors de l'envoi de votre demande. Veuillez réessayer.",
+      })
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      
-      <div className="pt-24 pb-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="font-playfair text-4xl font-bold text-gray-900 mb-4">
-              Suivi de la Comptabilité
-            </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Gérez votre comptabilité en toute sérénité avec nos experts comptables
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            <Card className="text-center">
-              <CardHeader>
-                <BarChart3 className="w-12 h-12 text-niger-orange mx-auto mb-4" />
-                <CardTitle>Comptabilité de Base</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">Tenue des livres comptables essentiels</p>
-                <p className="text-2xl font-bold text-niger-orange">50 000 FCFA/mois</p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <Users className="w-12 h-12 text-niger-green mx-auto mb-4" />
-                <CardTitle>Comptabilité Complète</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">Gestion complète + paie + analyses</p>
-                <p className="text-2xl font-bold text-niger-green">120 000 FCFA/mois</p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center">
-              <CardHeader>
-                <TrendingUp className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-                <CardTitle>Conseil & Audit</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">Audit + conseil financier personnalisé</p>
-                <p className="text-2xl font-bold text-blue-500">200 000 FCFA/mois</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card className="max-w-2xl mx-auto">
+    <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+      <div className="relative py-3 sm:max-w-3xl sm:mx-auto">
+        <div className="absolute inset-0 bg-gradient-to-r from-niger-orange to-niger-green shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+        <div className="relative bg-white shadow-lg sm:rounded-3xl p-8">
+          <Card>
             <CardHeader>
-              <CardTitle>Demande de Service</CardTitle>
+              <CardTitle className="text-2xl font-bold text-gray-900">Services Comptables</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="companyName">Nom de l'entreprise *</Label>
-                    <Input
-                      id="companyName"
-                      value={formData.companyName}
-                      onChange={(e) => setFormData({...formData, companyName: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="nif">NIF</Label>
-                    <Input
-                      id="nif"
-                      value={formData.nif}
-                      onChange={(e) => setFormData({...formData, nif: e.target.value})}
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="rccm">RCCM</Label>
-                    <Input
-                      id="rccm"
-                      value={formData.rccm}
-                      onChange={(e) => setFormData({...formData, rccm: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="contactPerson">Personne de contact *</Label>
-                    <Input
-                      id="contactPerson"
-                      value={formData.contactPerson}
-                      onChange={(e) => setFormData({...formData, contactPerson: e.target.value})}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="email">Email *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone">Téléphone *</Label>
-                    <Input
-                      id="phone"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="businessType">Type d'activité *</Label>
-                    <Input
-                      id="businessType"
-                      value={formData.businessType}
-                      onChange={(e) => setFormData({...formData, businessType: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="employees">Nombre d'employés</Label>
-                    <Select onValueChange={(value) => setFormData({...formData, employees: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionnez" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1-5">1-5 employés</SelectItem>
-                        <SelectItem value="6-20">6-20 employés</SelectItem>
-                        <SelectItem value="21-50">21-50 employés</SelectItem>
-                        <SelectItem value="50+">Plus de 50 employés</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
+              <form onSubmit={handleSubmit} className="grid gap-6">
                 <div>
-                  <Label htmlFor="serviceType">Type de service souhaité</Label>
-                  <Select onValueChange={(value) => setFormData({...formData, serviceType: value})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sélectionnez" />
+                  <Label htmlFor="companyName">Nom de l'entreprise</Label>
+                  <Input
+                    type="text"
+                    id="companyName"
+                    name="companyName"
+                    value={formData.companyName}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="companyType">Type d'entreprise</Label>
+                  <Select onValueChange={(value) => handleSelectChange('companyType', value)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Sélectionner le type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="basic">Comptabilité de Base</SelectItem>
-                      <SelectItem value="complete">Comptabilité Complète</SelectItem>
-                      <SelectItem value="audit">Conseil & Audit</SelectItem>
+                      <SelectItem value="SARL">SARL</SelectItem>
+                      <SelectItem value="SAS">SAS</SelectItem>
+                      <SelectItem value="Entreprise individuelle">Entreprise individuelle</SelectItem>
+                      <SelectItem value="Autre">Autre</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div>
-                  <Label htmlFor="accountingNeeds">Besoins comptables spécifiques</Label>
+                  <Label htmlFor="services">Services demandés</Label>
                   <Textarea
-                    id="accountingNeeds"
-                    value={formData.accountingNeeds}
-                    onChange={(e) => setFormData({...formData, accountingNeeds: e.target.value})}
-                    placeholder="Décrivez vos besoins comptables..."
+                    id="services"
+                    name="services"
+                    value={formData.services}
+                    onChange={handleChange}
+                    placeholder="Tenue de livres, déclarations fiscales, etc."
                   />
                 </div>
-
+                <div>
+                  <Label htmlFor="employees">Nombre d'employés</Label>
+                  <Input
+                    type="number"
+                    id="employees"
+                    name="employees"
+                    value={formData.employees}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="annualRevenue">Chiffre d'affaires annuel (estimé)</Label>
+                  <Input
+                    type="text"
+                    id="annualRevenue"
+                    name="annualRevenue"
+                    value={formData.annualRevenue}
+                    onChange={handleChange}
+                  />
+                </div>
                 <div>
                   <Label htmlFor="additionalInfo">Informations supplémentaires</Label>
                   <Textarea
                     id="additionalInfo"
+                    name="additionalInfo"
                     value={formData.additionalInfo}
-                    onChange={(e) => setFormData({...formData, additionalInfo: e.target.value})}
-                    placeholder="Autres informations utiles..."
+                    onChange={handleChange}
+                    placeholder="Décrivez vos besoins spécifiques"
                   />
                 </div>
-
-                <Button type="submit" className="w-full bg-niger-orange hover:bg-niger-orange-dark text-white">
-                  Envoyer ma demande
+                <Button disabled={isLoading}>
+                  {isLoading ? "Envoi en cours..." : "Envoyer la demande"}
                 </Button>
               </form>
             </CardContent>
           </Card>
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,21 +17,29 @@ const AppointmentBooking = () => {
     subject: '',
     message: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    setIsLoading(true);
+
+    const emailData = {
+      to: "naccorp@nacdigitalpulse.com",
+      subject: "Nouvelle demande de consultation",
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phone: formData.phone,
+      company: formData.company,
+      message: `Service demandé: ${formData.service}\nDate souhaitée: ${formData.preferredDate}\nHeure souhaitée: ${formData.preferredTime}\nMessage: ${formData.message}`,
+      type: 'appointment-booking' as const,
+      appointmentDate: formData.preferredDate,
+      appointmentTime: formData.preferredTime,
+      service: formData.service
+    };
 
     try {
-      await sendConfirmationEmail({
-        to: formData.email,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        type: 'appointment-booking',
-        data: formData
-      });
+      await sendConfirmationEmail(emailData);
 
       toast({
         title: "Demande de rendez-vous envoyée",
@@ -57,7 +64,7 @@ const AppointmentBooking = () => {
         variant: "destructive",
       });
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -205,11 +212,11 @@ const AppointmentBooking = () => {
 
         <Button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isLoading}
           className="w-full bg-gradient-to-r from-niger-orange to-niger-green text-white hover:scale-105 transition-transform duration-300"
           size="lg"
         >
-          {isSubmitting ? (
+          {isLoading ? (
             <>
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
               Envoi en cours...
