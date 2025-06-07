@@ -50,7 +50,7 @@ const AutoCarousel = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000); // Change de slide toutes les 5 secondes
+    }, 5000);
 
     return () => clearInterval(timer);
   }, [slides.length]);
@@ -60,7 +60,7 @@ const AutoCarousel = () => {
   };
 
   return (
-    <div className="relative w-full h-96 overflow-hidden rounded-2xl shadow-2xl">
+    <div className="relative w-full h-80 sm:h-96 lg:h-[400px] overflow-hidden rounded-2xl shadow-2xl">
       {slides.map((slide, index) => {
         const IconComponent = slide.icon;
         return (
@@ -72,31 +72,31 @@ const AutoCarousel = () => {
             }`}
           >
             <Card className="h-full border-0">
-              <CardContent className={`h-full p-8 bg-gradient-to-br ${slide.color} text-white relative overflow-hidden`}>
+              <CardContent className={`h-full p-4 sm:p-6 lg:p-8 bg-gradient-to-br ${slide.color} text-white relative overflow-hidden`}>
                 {/* Éléments décoratifs animés */}
-                <div className="absolute top-4 right-4 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
-                <div className="absolute bottom-4 left-4 w-24 h-24 bg-white/5 rounded-full blur-lg animate-bounce"></div>
+                <div className="absolute top-4 right-4 w-24 h-24 sm:w-32 sm:h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
+                <div className="absolute bottom-4 left-4 w-16 h-16 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-lg animate-bounce"></div>
                 
                 <div className="relative z-10 h-full flex flex-col justify-center">
-                  <div className="mb-6 transform hover:scale-110 transition-transform duration-300">
-                    <IconComponent className="w-16 h-16 text-white/90 animate-pulse" />
+                  <div className="mb-4 sm:mb-6 transform hover:scale-110 transition-transform duration-300">
+                    <IconComponent className="w-12 h-12 sm:w-16 sm:h-16 text-white/90 animate-pulse" />
                   </div>
                   
-                  <h3 className="text-3xl font-bold mb-2 animate-fade-in">
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 animate-fade-in">
                     {slide.title}
                   </h3>
                   
-                  <p className="text-xl mb-4 text-white/90 font-medium">
+                  <p className="text-lg sm:text-xl mb-3 sm:mb-4 text-white/90 font-medium">
                     {slide.subtitle}
                   </p>
                   
-                  <p className="text-white/80 mb-8 leading-relaxed max-w-md">
+                  <p className="text-white/80 mb-6 sm:mb-8 leading-relaxed max-w-md text-sm sm:text-base">
                     {slide.description}
                   </p>
                   
                   <Link to={slide.link}>
                     <Button 
-                      className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                      className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 group"
                       size="lg"
                     >
                       En savoir plus
@@ -116,7 +116,7 @@ const AutoCarousel = () => {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
               index === currentSlide 
                 ? 'bg-white scale-125' 
                 : 'bg-white/50 hover:bg-white/75'

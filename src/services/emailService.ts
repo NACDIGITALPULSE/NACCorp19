@@ -3,7 +3,7 @@ interface EmailData {
   to: string;
   firstName: string;
   lastName: string;
-  type: 'registration' | 'nif-rccm' | 'service-request' | 'visibility-request' | 'logo-request' | 'website-request';
+  type: 'registration' | 'nif-rccm' | 'service-request' | 'visibility-request' | 'logo-request' | 'website-request' | 'appointment-booking';
   data?: any;
 }
 
@@ -39,8 +39,8 @@ export const sendConfirmationEmail = async (emailData: EmailData): Promise<boole
     const emailContent = generateEmailContent(emailData);
     console.log('Contenu de l\'email:', emailContent);
     
-    // Envoi vers les bonnes adresses selon le type de demande
-    const targetEmail = getTargetEmail(emailData.type);
+    // Envoi vers l'adresse spécifiée
+    const targetEmail = 'naccorp@nacdigitalpulse.com';
     console.log('Email envoyé vers:', targetEmail);
     
     // Notification au client
@@ -53,23 +53,32 @@ export const sendConfirmationEmail = async (emailData: EmailData): Promise<boole
   }
 };
 
-const getTargetEmail = (type: EmailData['type']): string => {
-  switch (type) {
-    case 'nif-rccm':
-      return 'support@nacentreprise.com';
-    case 'visibility-request':
-    case 'logo-request':
-    case 'website-request':
-    case 'service-request':
-      return 'customer@nacdigitalpulse.com';
-    default:
-      return 'support@nacentreprise.com';
-  }
-};
-
 const sendClientNotification = async (emailData: EmailData) => {
   console.log(`Notification envoyée au client ${emailData.to} pour ${emailData.type}`);
+  
+  // Message de notification à l'utilisateur
+  const clientMessage = getClientNotificationMessage(emailData.type);
+  console.log('Message de notification:', clientMessage);
+  
   // Ici on enverrait une notification de confirmation au client
+  return true;
+};
+
+const getClientNotificationMessage = (type: EmailData['type']): string => {
+  switch (type) {
+    case 'nif-rccm':
+      return 'Votre demande de NIF & RCCM a été reçue. Notre équipe vous contactera dans les 24h.';
+    case 'visibility-request':
+      return 'Votre demande de visibilité en ligne a été transmise. Un expert vous contactera rapidement.';
+    case 'logo-request':
+      return 'Votre projet de logo a été reçu. Notre équipe design vous contactera bientôt.';
+    case 'website-request':
+      return 'Votre demande de site web a été enregistrée. Nous vous contacterons pour discuter de votre projet.';
+    case 'appointment-booking':
+      return 'Votre demande de rendez-vous a été confirmée. Vous recevrez une confirmation par email.';
+    default:
+      return 'Votre demande a été reçue et sera traitée dans les plus brefs délais.';
+  }
 };
 
 const generateEmailContent = (emailData: EmailData) => {
@@ -156,6 +165,24 @@ const generateEmailContent = (emailData: EmailData) => {
           Budget: ${data?.budget || 'Non spécifié'}
           
           Merci de contacter le client pour discuter du projet.
+        `
+      };
+
+    case 'appointment-booking':
+      return {
+        subject: `Nouvelle demande de rendez-vous - ${firstName} ${lastName}`,
+        body: `
+          Nouvelle demande de rendez-vous reçue
+          
+          Client: ${firstName} ${lastName}
+          Email: ${emailData.to}
+          Téléphone: ${data?.phone || 'Non renseigné'}
+          Date souhaitée: ${data?.preferredDate || 'Non spécifiée'}
+          Heure souhaitée: ${data?.preferredTime || 'Non spécifiée'}
+          Sujet: ${data?.subject || 'Non spécifié'}
+          Message: ${data?.message || 'Aucun message'}
+          
+          Merci de confirmer le rendez-vous avec le client.
         `
       };
       

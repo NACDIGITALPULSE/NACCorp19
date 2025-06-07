@@ -14,17 +14,16 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm dark:bg-gray-900/95 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
+          {/* Logo uniquement */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center group">
               <div className="w-16 h-16 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                 <img 
                   src="/lovable-uploads/4d7841ab-db59-4429-8ff2-fca10017244f.png" 
-                  alt="NACCORP Logo" 
+                  alt="Logo" 
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="ml-3 text-xl font-bold text-niger-orange">NACCORP</span>
             </Link>
           </div>
 

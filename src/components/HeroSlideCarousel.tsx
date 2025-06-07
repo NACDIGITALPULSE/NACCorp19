@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Check, FileText, Palette, Globe, Users } from "lucide-react";
+import ThreeDIllustration from "./ThreeDIllustration";
 
 const HeroSlideCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -65,14 +66,14 @@ const HeroSlideCarousel = () => {
   };
 
   return (
-    <div className="animate-fade-in">
+    <div className="w-full animate-fade-in">
       <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-niger-orange/20 to-niger-green/20 text-niger-orange rounded-full text-sm font-medium mb-8 border border-niger-orange/30 backdrop-blur-sm">
         <Check className="w-5 h-5 mr-2 animate-bounce" />
         Plateforme certifiée et sécurisée
       </div>
       
-      {/* Carrousel des slides principal */}
-      <div className="relative h-96 mb-8 overflow-hidden">
+      {/* Carrousel des slides principal - Full Width */}
+      <div className="relative w-full h-96 sm:h-[500px] lg:h-[600px] mb-8 overflow-hidden rounded-3xl">
         {slides.map((slide, index) => {
           const IconComponent = slide.icon;
           return (
@@ -83,44 +84,53 @@ const HeroSlideCarousel = () => {
                 index < currentSlide ? 'opacity-0 -translate-x-full scale-95' : 'opacity-0 translate-x-full scale-95'
               }`}
             >
-              <div className={`h-full rounded-3xl bg-gradient-to-br ${slide.gradient} border-0 backdrop-blur-sm p-8 relative overflow-hidden shadow-2xl`}>
-                {/* Éléments décoratifs animés */}
-                <div className="absolute top-4 right-4 w-24 h-24 bg-white/20 rounded-full blur-xl animate-pulse"></div>
-                <div className="absolute bottom-4 left-4 w-20 h-20 bg-white/15 rounded-full blur-lg animate-bounce"></div>
-                <div className="absolute top-1/2 right-8 w-16 h-16 bg-white/10 rounded-full blur-md animate-pulse"></div>
-                
-                <div className="relative z-10 h-full flex flex-col justify-center text-white">
-                  <div className="mb-6 transform hover:scale-125 hover:rotate-12 transition-all duration-500">
-                    <div className="p-5 rounded-2xl bg-white/25 backdrop-blur-sm inline-block shadow-xl">
-                      <IconComponent className={`w-16 h-16 ${slide.iconColor} animate-pulse hover:animate-bounce transition-all duration-300`} />
+              <div className={`h-full w-full rounded-3xl bg-gradient-to-br ${slide.gradient} border-0 backdrop-blur-sm relative overflow-hidden shadow-2xl`}>
+                {/* Grille responsive */}
+                <div className="h-full grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 sm:p-8 lg:p-12">
+                  {/* Contenu textuel */}
+                  <div className="relative z-10 flex flex-col justify-center text-white order-2 lg:order-1">
+                    <div className="mb-6 transform hover:scale-125 hover:rotate-12 transition-all duration-500">
+                      <div className="p-5 rounded-2xl bg-white/25 backdrop-blur-sm inline-block shadow-xl">
+                        <IconComponent className={`w-12 h-12 lg:w-16 lg:h-16 ${slide.iconColor} animate-pulse hover:animate-bounce transition-all duration-300`} />
+                      </div>
+                    </div>
+                    
+                    <h1 className="font-playfair text-2xl sm:text-3xl lg:text-5xl font-bold leading-tight mb-4 animate-fade-in">
+                      {slide.title}
+                    </h1>
+                    
+                    <p className="text-lg sm:text-xl font-semibold mb-4 text-white/95">
+                      {slide.subtitle}
+                    </p>
+                    
+                    <p className="text-white/90 leading-relaxed mb-6 text-base sm:text-lg max-w-2xl">
+                      {slide.description}
+                    </p>
+
+                    {/* Prix et fonctionnalités */}
+                    <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 mb-4 max-w-md">
+                      <div className="text-xl sm:text-2xl font-bold text-white mb-2">{slide.price}</div>
+                      <div className="space-y-1">
+                        {slide.features.map((feature, idx) => (
+                          <div key={idx} className="flex items-center text-sm text-white/90">
+                            <Check className="w-4 h-4 mr-2 text-white" />
+                            {feature}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                  
-                  <h1 className="font-playfair text-4xl md:text-5xl font-bold leading-tight mb-4 animate-fade-in">
-                    {slide.title}
-                  </h1>
-                  
-                  <p className="text-xl font-semibold mb-4 text-white/95">
-                    {slide.subtitle}
-                  </p>
-                  
-                  <p className="text-white/90 leading-relaxed mb-6 text-lg">
-                    {slide.description}
-                  </p>
 
-                  {/* Prix et fonctionnalités */}
-                  <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 mb-4">
-                    <div className="text-2xl font-bold text-white mb-2">{slide.price}</div>
-                    <div className="space-y-1">
-                      {slide.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center text-sm text-white/90">
-                          <Check className="w-4 h-4 mr-2 text-white" />
-                          {feature}
-                        </div>
-                      ))}
-                    </div>
+                  {/* Illustration 3D */}
+                  <div className="relative z-10 flex items-center justify-center order-1 lg:order-2">
+                    <ThreeDIllustration />
                   </div>
                 </div>
+
+                {/* Éléments décoratifs animés - positionnés en arrière-plan */}
+                <div className="absolute top-4 right-4 w-24 h-24 lg:w-32 lg:h-32 bg-white/20 rounded-full blur-xl animate-pulse"></div>
+                <div className="absolute bottom-4 left-4 w-20 h-20 lg:w-28 lg:h-28 bg-white/15 rounded-full blur-lg animate-bounce"></div>
+                <div className="absolute top-1/2 right-8 w-16 h-16 lg:w-20 lg:h-20 bg-white/10 rounded-full blur-md animate-pulse"></div>
               </div>
             </div>
           );
