@@ -129,6 +129,25 @@ export const useRegistrationWorkflow = () => {
     }
   };
 
+  const sendNotificationEmail = async (formData: any, step: string) => {
+    try {
+      const emailData = {
+        to: "naccorp@nacdigitalpulse.com",
+        subject: `Nouvelle inscription - ${step}`,
+        firstName: formData.firstName || '',
+        lastName: formData.lastName || '',
+        phone: formData.phone || '',
+        company: formData.companyName || '',
+        message: `Étape: ${step}\nDonnées: ${JSON.stringify(formData, null, 2)}`,
+        type: 'registration' as const
+      };
+
+      await sendConfirmationEmail(emailData);
+    } catch (error) {
+      console.error('Erreur envoi email:', error);
+    }
+  };
+
   return {
     currentStep,
     registrationData,

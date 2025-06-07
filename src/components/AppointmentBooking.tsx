@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +16,9 @@ const AppointmentBooking = () => {
     preferredDate: '',
     preferredTime: '',
     subject: '',
-    message: ''
+    message: '',
+    company: '',
+    service: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -55,7 +58,9 @@ const AppointmentBooking = () => {
         preferredDate: '',
         preferredTime: '',
         subject: '',
-        message: ''
+        message: '',
+        company: '',
+        service: ''
       });
     } catch (error) {
       toast({
@@ -193,6 +198,20 @@ const AppointmentBooking = () => {
             required
             className="w-full"
             placeholder="Ex: Création d'entreprise, Site web, Logo..."
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Service demandé
+          </label>
+          <Input
+            type="text"
+            name="service"
+            value={formData.service}
+            onChange={handleChange}
+            className="w-full"
+            placeholder="NIF & RCCM, Site web, Logo, etc."
           />
         </div>
 
