@@ -1,15 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ChevronLeft, ChevronRight, Building, Globe, Palette, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-
-// Dummy 3D Illustration Component (Replace with your actual component)
-const ThreeDIllustration = () => (
-  <div className="w-full h-full bg-gray-200 rounded-full flex items-center justify-center">
-    <span className="text-gray-500">3D Illustration</span>
-  </div>
-);
+import ThreeDIllustration from './ThreeDIllustration';
 
 interface Slide {
   badge: string;
@@ -110,6 +105,10 @@ const HeroSlideCarousel = () => {
     setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
   };
 
+  const currentSlideData = slides[currentSlide];
+  const PrimaryIcon = currentSlideData.primaryAction.icon;
+  const SecondaryIcon = currentSlideData.secondaryAction.icon;
+
   return (
     <div className="relative h-[500px] md:h-[600px] lg:h-[700px] overflow-hidden bg-gradient-to-br from-niger-orange via-red-500 to-pink-600">
       <div className="absolute inset-0 bg-black/20"></div>
@@ -132,7 +131,7 @@ const HeroSlideCarousel = () => {
                 className="mb-6"
               >
                 <span className="inline-block px-4 py-2 bg-white/20 text-white rounded-full text-sm font-medium backdrop-blur-sm border border-white/30">
-                  {slides[currentSlide].badge}
+                  {currentSlideData.badge}
                 </span>
               </motion.div>
               
@@ -142,7 +141,7 @@ const HeroSlideCarousel = () => {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
               >
-                {slides[currentSlide].title}
+                {currentSlideData.title}
               </motion.h1>
               
               <motion.p
@@ -151,7 +150,7 @@ const HeroSlideCarousel = () => {
                 transition={{ delay: 0.5, duration: 0.6 }}
                 className="text-lg md:text-xl mb-8 opacity-90 max-w-2xl"
               >
-                {slides[currentSlide].description}
+                {currentSlideData.description}
               </motion.p>
               
               <motion.div
@@ -160,17 +159,17 @@ const HeroSlideCarousel = () => {
                 transition={{ delay: 0.6, duration: 0.6 }}
                 className="flex flex-col sm:flex-row gap-4"
               >
-                <Link to={slides[currentSlide].primaryAction.link}>
+                <Link to={currentSlideData.primaryAction.link}>
                   <Button size="lg" className="bg-white text-niger-orange hover:bg-gray-100 shadow-lg group transition-all duration-300 hover:scale-105 w-full sm:w-auto">
-                    <slides[currentSlide].primaryAction.icon className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
-                    {slides[currentSlide].primaryAction.text}
+                    <PrimaryIcon className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
+                    {currentSlideData.primaryAction.text}
                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
-                <Link to={slides[currentSlide].secondaryAction.link}>
+                <Link to={currentSlideData.secondaryAction.link}>
                   <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-niger-orange shadow-lg group transition-all duration-300 hover:scale-105 w-full sm:w-auto">
-                    <slides[currentSlide].secondaryAction.icon className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
-                    {slides[currentSlide].secondaryAction.text}
+                    <SecondaryIcon className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
+                    {currentSlideData.secondaryAction.text}
                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
