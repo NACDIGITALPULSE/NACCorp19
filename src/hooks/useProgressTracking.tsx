@@ -1,70 +1,104 @@
 
 import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface ProcedureStatus {
   id: string;
-  type: 'nif' | 'rccm' | 'logo' | 'website' | 'financial' | 'social-media';
+  procedure_type: 'nif' | 'rccm' | 'logo' | 'website' | 'financial' | 'social-media' | 'offshore';
   title: string;
   status: 'pending' | 'in-progress' | 'completed' | 'waiting';
   progress: number;
-  estimatedDays: number;
-  startDate?: Date;
-  completionDate?: Date;
-  nextSteps?: string[];
-}
-
-export interface UserProcedures {
-  userId: string;
-  procedures: ProcedureStatus[];
-  overallProgress: number;
+  current_step: number;
+  total_steps: number;
+  data?: any;
+  created_at: string;
+  updated_at: string;
 }
 
 export const useProgressTracking = (userId?: string) => {
   const [procedures, setProcedures] = useState<ProcedureStatus[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simulation des données - dans un vrai projet, ceci viendrait d'une API
   useEffect(() => {
-    if (!userId) return;
-
-    // Simulation d'un délai de chargement
-    setTimeout(() => {
-      const mockProcedures: ProcedureStatus[] = [
-        {
-          id: '1',
-          type: 'nif',
-          title: 'Création NIF',
-          status: 'completed',
-          progress: 100,
-          estimatedDays: 2,
-          startDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-          completionDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-        },
-        {
-          id: '2',
-          type: 'rccm',
-          title: 'Enregistrement RCCM',
-          status: 'in-progress',
-          progress: 65,
-          estimatedDays: 5,
-          startDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-          nextSteps: ['Validation des documents', 'Signature numérique']
-        },
-        {
-          id: '3',
-          type: 'logo',
-          title: 'Création logo',
-          status: 'waiting',
-          progress: 0,
-          estimatedDays: 3,
-          nextSteps: ['En attente de finalisation RCCM']
-        }
-      ];
-
-      setProcedures(mockProcedures);
+    if (!userId) {
       setIsLoading(false);
-    }, 1000);
+      return;
+    }
+
+    fetchUserProcedures();
   }, [userId]);
+
+  const fetchUserProcedures = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('user_procedures')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching procedures:', error);
+        return;
+      }
+
+      setProcedures(data || []);
+    } catch (error) {
+      console.error('Error fetching user procedures:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const createProcedure = async (procedureData: Partial<ProcedureStatus>) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_procedures')
+        .insert({
+          user_id: userId,
+          ...procedureData
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating procedure:', error);
+        return null;
+      }
+
+      setProcedures(prev => [data, ...prev]);
+      return data;
+    } catch (error) {
+      console.error('Error creating procedure:', error);
+      return null;
+    }
+  };
+
+  const updateProcedure = async (procedureId: string, updates: Partial<ProcedureStatus>) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_procedures')
+        .update({
+          ...updates,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', procedureId)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error updating procedure:', error);
+        return null;
+      }
+
+      setProcedures(prev => 
+        prev.map(proc => proc.id === procedureId ? data : proc)
+      );
+      return data;
+    } catch (error) {
+      console.error('Error updating procedure:', error);
+      return null;
+    }
+  };
 
   const getStatusColor = (status: ProcedureStatus['status']) => {
     switch (status) {
@@ -92,14 +126,6 @@ export const useProgressTracking = (userId?: string) => {
     }
   };
 
-  const getEstimatedCompletion = (procedure: ProcedureStatus) => {
-    if (procedure.completionDate) return procedure.completionDate;
-    if (!procedure.startDate) return null;
-    
-    const remainingDays = Math.ceil(procedure.estimatedDays * (1 - procedure.progress / 100));
-    return new Date(Date.now() + remainingDays * 24 * 60 * 60 * 1000);
-  };
-
   const getOverallProgress = () => {
     if (procedures.length === 0) return 0;
     const totalProgress = procedures.reduce((sum, proc) => sum + proc.progress, 0);
@@ -111,7 +137,9 @@ export const useProgressTracking = (userId?: string) => {
     isLoading,
     getStatusColor,
     getStatusText,
-    getEstimatedCompletion,
-    overallProgress: getOverallProgress()
+    overallProgress: getOverallProgress(),
+    createProcedure,
+    updateProcedure,
+    refreshProcedures: fetchUserProcedures
   };
 };

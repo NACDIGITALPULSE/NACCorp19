@@ -6,7 +6,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
-import Services from "@/components/Services";
 import Process from "@/components/Process";
 import Statistics from "@/components/Statistics";
 import Testimonials from "@/components/Testimonials";
@@ -16,6 +15,7 @@ import AutoCarousel from "@/components/AutoCarousel";
 import AnimatedFeatureCard from "@/components/AnimatedFeatureCard";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import AppointmentBooking from "@/components/AppointmentBooking";
+import ServicesCarousel from "@/components/ServicesCarousel";
 
 const Home = () => {
   const featuresData = [
@@ -62,9 +62,16 @@ const Home = () => {
       <Header />
       <Hero />
       
+      {/* Section Services en carrousel */}
+      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-niger-orange via-red-500 to-pink-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ServicesCarousel />
+        </div>
+      </section>
+
       {/* Section Carousel automatique */}
       <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-gray-50 to-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               Découvrez nos <span className="text-transparent bg-clip-text bg-gradient-to-r from-niger-orange to-niger-green">solutions innovantes</span>
@@ -80,7 +87,7 @@ const Home = () => {
 
       {/* Section Features améliorée avec animations */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
             <div className="inline-flex items-center px-4 py-2 bg-niger-orange/10 text-niger-orange rounded-full text-sm font-medium mb-6 border border-niger-orange/20">
               <Zap className="w-4 h-4 mr-2" />
@@ -105,14 +112,13 @@ const Home = () => {
       </section>
 
       <Features />
-      <Services />
       <Process />
       <Statistics />
       <Testimonials />
       
       {/* Section Planifier un appel */}
       <section id="appointment" className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-gray-50 to-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               Planifiez une <span className="text-transparent bg-clip-text bg-gradient-to-r from-niger-orange to-niger-green">consultation gratuite</span>
@@ -132,7 +138,7 @@ const Home = () => {
         <div className="absolute top-10 right-10 w-24 h-24 sm:w-32 sm:h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
         <div className="absolute bottom-10 left-10 w-32 h-32 sm:w-40 sm:h-40 bg-white/5 rounded-full blur-xl animate-bounce"></div>
         
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <div className="mb-6 flex justify-center">
             <div className="p-4 bg-white/20 rounded-full animate-pulse">
               <Heart className="w-8 h-8 sm:w-12 sm:h-12 text-white" />

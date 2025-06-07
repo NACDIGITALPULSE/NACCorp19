@@ -1,109 +1,142 @@
 
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Check, Star, Zap, Palette, Globe } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Building, Globe, Palette, MessageSquare, FileText, Calculator, Ship, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+const services = [
+  {
+    title: "NIF & RCCM",
+    description: "Création officielle de votre entreprise",
+    price: "50,000 FCFA",
+    icon: Building,
+    link: "/inscription-nif-rccm",
+    gradient: "from-niger-orange to-red-500"
+  },
+  {
+    title: "Site Web",
+    description: "Présence digitale professionnelle",
+    price: "150,000 FCFA",
+    icon: Globe,
+    link: "/website-service",
+    gradient: "from-niger-green to-teal-500"
+  },
+  {
+    title: "Logo Design",
+    description: "Identité visuelle unique",
+    price: "25,000 FCFA",
+    icon: Palette,
+    link: "/logo-service",
+    gradient: "from-blue-500 to-indigo-600"
+  },
+  {
+    title: "Visibilité Online",
+    description: "Marketing digital et réseaux sociaux",
+    price: "75,000 FCFA",
+    icon: MessageSquare,
+    link: "/visibilite-en-ligne",
+    gradient: "from-purple-500 to-pink-600"
+  },
+  {
+    title: "Déclaration Fiscale",
+    description: "Gestion des obligations fiscales",
+    price: "30,000 FCFA",
+    icon: FileText,
+    link: "/declaration-fiscale",
+    gradient: "from-indigo-500 to-purple-600"
+  },
+  {
+    title: "Comptabilité",
+    description: "Tenue de livres professionnelle",
+    price: "100,000 FCFA",
+    icon: Calculator,
+    link: "/comptabilite",
+    gradient: "from-teal-500 to-cyan-600"
+  },
+  {
+    title: "Société Offshore",
+    description: "Expansion internationale",
+    price: "500,000 FCFA",
+    icon: Ship,
+    link: "/offshore",
+    gradient: "from-emerald-500 to-green-600"
+  }
+];
 
 const ServicesCarousel = () => {
-  const servicesCarousel = [
-    {
-      title: "Pack Entrepreneur Complet",
-      description: "NIF + RCCM + Logo + Site web",
-      price: "250 000 FCFA",
-      originalPrice: "350 000 FCFA",
-      icon: Star,
-      color: "from-amber-400 to-orange-600",
-      features: ["Toutes démarches incluses", "Identité visuelle complète", "Site web professionnel", "Support prioritaire"]
-    },
-    {
-      title: "Démarches Express",
-      description: "NIF et RCCM rapidement",
-      price: "75 000 FCFA",
-      originalPrice: null,
-      icon: Zap,
-      color: "from-niger-orange to-red-500",
-      features: ["NIF en 24h", "RCCM en 3 jours", "Documents officiels", "Suivi en temps réel"]
-    },
-    {
-      title: "Design Professionnel",
-      description: "Logo et charte graphique",
-      price: "50 000 FCFA",
-      originalPrice: "80 000 FCFA",
-      icon: Palette,
-      color: "from-purple-500 to-pink-600",
-      features: ["Logo unique", "Charte graphique", "Cartes de visite", "Révisions illimitées"]
-    },
-    {
-      title: "Présence Web",
-      description: "Site web moderne et optimisé",
-      price: "150 000 FCFA",
-      originalPrice: "200 000 FCFA",
-      icon: Globe,
-      color: "from-blue-500 to-cyan-600",
-      features: ["Site responsive", "SEO inclus", "Hébergement 1 an", "Formation incluse"]
-    }
-  ];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % Math.ceil(services.length / 3));
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying]);
+
+  const getVisibleServices = () => {
+    const startIndex = currentIndex * 3;
+    return services.slice(startIndex, startIndex + 3);
+  };
 
   return (
-    <div className="animate-slide-in-right">
-      <div className="relative">
-        <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 relative z-10 border border-gray-200/50">
-          <div className="text-center mb-6">
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Nos Services & Tarifs</h3>
-            <p className="text-gray-600">Solutions complètes pour votre réussite</p>
-          </div>
+    <div className="w-full">
+      <div className="text-center mb-8">
+        <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
+          Nos Services Populaires
+        </h3>
+        <p className="text-white/90 text-lg max-w-2xl mx-auto">
+          Découvrez notre gamme complète de services pour votre réussite entrepreneuriale
+        </p>
+      </div>
 
-          {/* Carrousel des services */}
-          <div className="space-y-4 max-h-80 overflow-y-auto">
-            {servicesCarousel.map((service, index) => {
-              const ServiceIcon = service.icon;
-              return (
-                <div 
-                  key={index}
-                  className={`p-4 rounded-xl bg-gradient-to-r ${service.color} text-white transform hover:scale-105 transition-all duration-300 hover:shadow-xl cursor-pointer group`}
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center">
-                      <div className="p-2 bg-white/20 rounded-lg mr-3 group-hover:rotate-12 transition-transform duration-300">
-                        <ServiceIcon className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-300" />
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-lg">{service.title}</h4>
-                        <p className="text-sm text-white/90">{service.description}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xl font-bold">{service.price}</div>
-                      {service.originalPrice && (
-                        <div className="text-sm line-through text-white/70">{service.originalPrice}</div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    {service.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center">
-                        <Check className="w-3 h-3 mr-1" />
-                        {feature}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {getVisibleServices().map((service, index) => (
+          <Card 
+            key={`${currentIndex}-${index}`}
+            className="bg-white/95 backdrop-blur-sm hover:shadow-xl transition-all duration-300 transform hover:scale-105 animate-fade-in"
+            style={{ animationDelay: `${index * 0.1}s` }}
+          >
+            <CardContent className="p-6 text-center">
+              <div className={`w-16 h-16 mx-auto mb-4 bg-gradient-to-r ${service.gradient} rounded-full flex items-center justify-center`}>
+                <service.icon className="w-8 h-8 text-white" />
+              </div>
+              <h4 className="text-xl font-bold text-gray-900 mb-2">{service.title}</h4>
+              <p className="text-gray-600 text-sm mb-4">{service.description}</p>
+              <div className="text-2xl font-bold text-niger-orange mb-4">
+                À partir de {service.price}
+              </div>
+              <Link to={service.link}>
+                <Button className="w-full bg-niger-orange hover:bg-niger-orange-dark text-white group">
+                  Choisir ce service
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-          <div className="mt-6 text-center">
-            <Link to="/pricing">
-              <Button className="bg-gradient-to-r from-niger-orange to-niger-green text-white hover:scale-105 transition-transform duration-300">
-                <Star className="w-4 h-4 mr-2" />
-                Voir tous les tarifs
-              </Button>
-            </Link>
-          </div>
-        </div>
-        
-        {/* Fond décoratif animé */}
-        <div className="absolute -top-4 -right-4 w-full h-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl -z-10 animate-pulse"></div>
+      {/* Indicateurs de pagination */}
+      <div className="flex justify-center space-x-2">
+        {Array.from({ length: Math.ceil(services.length / 3) }).map((_, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              setCurrentIndex(index);
+              setIsAutoPlaying(false);
+            }}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              index === currentIndex 
+                ? 'bg-white scale-125' 
+                : 'bg-white/50 hover:bg-white/70'
+            }`}
+          />
+        ))}
       </div>
     </div>
   );
